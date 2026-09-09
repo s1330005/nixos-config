@@ -162,3 +162,24 @@ nixos-rebuild switch --flake /etc/nixos#<hostname>
 If `git push` is rejected because the other machine pushed first, `git pull --rebase` and
 push again. Conflicts (if any) will usually only show up in `flake.lock`; resolve by keeping
 either side and re-running `nix flake update` if needed.
+
+### Moving an already-installed machine onto this host layout
+
+If a machine was already running NixOS before `hosts/<hostname>/` existed, it already has its
+own working `hardware-configuration.nix` (possibly hand-edited, e.g. the btrfs subvolume
+options from step 3 above). Preserve that file instead of regenerating it:
+
+```sh
+cd /etc/nixos
+cp hardware-configuration.nix /tmp/hardware-configuration.nix.bak   # back up the real one first
+git fetch origin
+git reset --hard origin/main          # adopt the new repo layout
+cp /tmp/hardware-configuration.nix.bak hosts/<hostname>/hardware-configuration.nix
+nixos-rebuild switch --flake /etc/nixos#<hostname>
+git add hosts/<hostname>/hardware-configuration.nix
+git commit -m "Add hardware config for <hostname>"
+git push
+```
+
+Only fall back to `nixos-generate-config --show-hardware-config` if that machine never had a
+`hardware-configuration.nix` of its own (e.g. a brand-new install).
