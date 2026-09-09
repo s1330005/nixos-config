@@ -21,7 +21,7 @@ let wireless = ($ifaces | where {|i| (is_wireless $i) and (is_up $i) })
 if not ($wired | is-empty) {
   print "󰌗"
 } else if not ($wireless | is-empty) {
-  print "󰖩"
+  print ""
 } else {
-  print "󰖪"
+  print ""
 }
