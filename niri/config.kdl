@@ -37,11 +37,11 @@ output "eDP-1" {
     transform "normal"
     position x=0 y=0
 }
-//output "HDMI-A-1" {
-//    mode "3840x2160@120.000"
-//    scale 1.5
-//    position x=0 y=0
-//}
+output "HDMI-A-1" {
+    mode "3840x2160@120.000"
+    scale 1.5
+    position x=0 y=0
+}
 layout {
     gaps 8
     center-focused-column "never"
