@@ -1,0 +1,248 @@
+(deflisten workspaces
+  "~/.local/bin/eww-workspaces")
+
+(defpoll time :interval "1s"
+  "date '+%-H:%M'")
+
+(deflisten volume_icon :initial "󰖁"
+  "~/.local/bin/eww-volume-icon")
+
+(deflisten volume_text :initial "0%"
+  "~/.local/bin/eww-volume-text")
+
+(defpoll volume_visible :interval "99999s"
+  "echo false")
+
+(defpoll cpu :interval "2s"
+  "top -bn1 | grep 'Cpu(s)' | awk '{printf \"%d%%\", $2}'")
+
+(defpoll mem :interval "2s"
+  "free | grep Mem | awk '{printf \"%d%%\", $3/$2 * 100}'")
+
+(defpoll net_icon :interval "3s"
+  "~/.local/bin/eww-net-icon")
+
+(defpoll battery :interval "15s"
+  "~/.local/bin/eww-battery")
+
+(defwidget workspace-btn [ws]
+  (eventbox
+    :onclick {"niri msg action focus-workspace " + jq(ws, ".id")}
+    (label
+      :class {jq(ws, ".is_active") == "true" ? "ws-label-active" : "ws-label"}
+      :text {jq(ws, ".idx")})))
+
+(defwidget workspaces []
+  (box
+    :class "ws-box"
+    :orientation "h"
+    :spacing 8
+    :space-evenly false
+    (for ws in {workspaces}
+      (workspace-btn :ws {ws}))))
+
+(defwidget clock []
+  (centerbox
+    :class "clock-box"
+    :orientation "h"
+    (box)
+    {time}
+    (box)))
+
+(defwidget volume-widget []
+  (eventbox
+    :onclick "eww open-many --toggle volume-overlay-window volume-popup-window"
+    (box
+      :class "vol-box"
+      :spacing 6
+      :space-evenly false
+      (label :class "vol-icon" :text {volume_icon})
+      (label :class "sysinfo-text" :text {volume_text}))))
+
+(defwidget volume-popup []
+  (box
+    :class "vol-popup"
+    :orientation "h"
+    :spacing 8
+    :space-evenly false
+    (label :class "vol-icon" :text {volume_icon})
+    (scale
+      :class "vol-slider"
+      :orientation "h"
+      :min 0
+      :max 101
+      :value {replace(volume_text, "%", "")}
+      :onchange "wpctl set-volume @DEFAULT_AUDIO_SINK@ {}%")))
+
+(defwidget volume-overlay []
+  (eventbox :onclick "eww close volume-popup-window && eww close volume-overlay-window"))
+
+(defwidget cpu-widget []
+  (box
+    :class "cpu-box"
+    :spacing 6
+    :space-evenly false
+    (label :class "cpu-icon" :text "󰍛")
+    (label :class "sysinfo-text" :text {cpu})))
+
+(defwidget mem-widget []
+  (box
+    :class "mem-box"
+    :spacing 6
+    :space-evenly false
+    (label :class "mem-icon" :text "")
+    (label :class "sysinfo-text" :text {mem})))
+
+(defwidget net-widget []
+  (box
+    :class "net-box"
+    :spacing 6
+    :space-evenly false
+    (label :class "net-icon" :text {net_icon})))
+
+(defwidget battery-widget []
+  (box
+    :class {jq(battery, ".charging") == "true"
+      ? "battery-box battery-charging"
+      : (jq(battery, ".low") == "true" ? "battery-box battery-low" : "battery-box")}
+    :spacing 6
+    :space-evenly false
+    (label :class "battery-icon" :text {replace(jq(battery, ".icon"), "\"", "")})
+    (label :class "sysinfo-text" :text {jq(battery, ".capacity") + "%"})))
+
+(defwidget launcher []
+  (button
+    :class "launcher-btn"
+    :onclick "eww open-many --toggle power-menu-overlay-window power-menu-window"
+    (label :text "󰐥" :halign "center" :valign "center")))
+
+(defwidget power-menu []
+  (box
+    :class "power-menu"
+    :orientation "v"
+    :spacing 0
+    :space-evenly false
+    (button
+      :class "power-menu-item"
+      :onclick "eww close power-menu-window && eww close power-menu-overlay-window && walker &"
+      (box
+        :spacing 10
+        :space-evenly false
+        (label :class "power-menu-icon" :text "󰀻")
+        (label :class "power-menu-text" :text "Show Apps")))
+    (box :class "power-menu-sep" :halign "fill")
+    (button
+      :class "power-menu-item"
+      :onclick "eww close power-menu-window && eww close power-menu-overlay-window && systemctl suspend"
+      (box
+        :spacing 10
+        :space-evenly false
+        (label :class "power-menu-icon" :text "")
+        (label :class "power-menu-text" :text "Sleep")))
+    (button
+      :class "power-menu-item"
+      :onclick "eww close power-menu-window && eww close power-menu-overlay-window && hyprlock &"
+      (box
+        :spacing 10
+        :space-evenly false
+        (label :class "power-menu-icon" :text "󰌾")
+        (label :class "power-menu-text" :text "Lock Screen")))
+    (button
+      :class "power-menu-item"
+      :onclick "eww close power-menu-window && eww close power-menu-overlay-window && reboot"
+      (box
+        :spacing 10
+        :space-evenly false
+        (label :class "power-menu-icon" :text "")
+        (label :class "power-menu-text" :text "Restart")))
+    (button
+      :class "power-menu-item power-menu-item-shutdown"
+      :onclick "eww close power-menu-window && eww close power-menu-overlay-window && shutdown now"
+      (box
+        :spacing 10
+        :space-evenly false
+        (label :class "power-menu-icon" :text "󰐥")
+        (label :class "power-menu-text" :text "Shut Down")))))
+
+(defwidget power-menu-overlay []
+  (eventbox :onclick "eww close power-menu-window && eww close power-menu-overlay-window"))
+
+(defwindow workspaces-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "10px" :y "0%" :width "10px" :height "34px" :anchor "top left")
+  :reserve (struts :side "top" :distance "20px")
+  (workspaces))
+
+(defwindow clock
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "0%" :y "0%" :width "65px" :height "34px" :anchor "top center")
+  :reserve (struts :side "top" :distance "20px")
+  (clock))
+
+(defwindow volume-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "266px" :y "0%" :width "70px" :height "34px" :anchor "top right")
+  :reserve (struts :side "top" :distance "20px")
+  (volume-widget))
+
+(defwindow volume-popup-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "200px" :y "35px" :width "200px" :height "40px" :anchor "top right")
+  (volume-popup))
+
+(defwindow volume-overlay-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "0" :y "0" :width "100%" :height "100%")
+  (volume-overlay))
+
+(defwindow cpu-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "188px" :y "0%" :width "70px" :height "34px" :anchor "top right")
+  :reserve (struts :side "top" :distance "20px")
+  (cpu-widget))
+
+(defwindow mem-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "106px" :y "0%" :width "70px" :height "34px" :anchor "top right")
+  :reserve (struts :side "top" :distance "20px")
+  (mem-widget))
+
+(defwindow net-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "58px" :y "0%" :width "40px" :height "34px" :anchor "top right")
+  :reserve (struts :side "top" :distance "20px")
+  (net-widget))
+
+(defwindow battery-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "344px" :y "0%" :width "70px" :height "34px" :anchor "top right")
+  :reserve (struts :side "top" :distance "20px")
+  (battery-widget))
+
+(defwindow launcher-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "10px" :y "0%" :width "40px" :height "34px" :anchor "top right")
+  :reserve (struts :side "top" :distance "20px")
+  (launcher))
+
+(defwindow power-menu-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "6px" :y "35px" :width "220px" :height "10px" :anchor "top right")
+  (power-menu))
+
+(defwindow power-menu-overlay-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "0" :y "0" :width "100%" :height "100%")
+  (power-menu-overlay))

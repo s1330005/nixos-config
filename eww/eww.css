@@ -1,0 +1,274 @@
+window {
+  background: transparent;
+}
+
+.sysinfo-text {
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  color: #e0e0e0;
+}
+
+.ws-box {
+  margin: 4px 0;
+  padding: 0 10px;
+  background-color: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.ws-label {
+  min-width: 20px;
+  color: rgba(224, 224, 224, 0.5);
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 50%;
+}
+
+.ws-label-active {
+  min-width: 20px;
+  color: #e0e0e0;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  padding: 2px 8px;
+}
+
+.clock-box {
+  margin: 4px 0;
+  background-color: rgba(20, 20, 20, 0.8);
+  color: #e0e0e0;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+centerbox {
+  padding: 0 10px;
+}
+
+.vol-box {
+  margin: 4px 0;
+  padding: 0 12px;
+  background-color: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.vol-icon {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 16px;
+  color: #e0e0e0;
+  padding-right: 2px;
+}
+
+.vol-popup {
+  background-color: rgba(45, 53, 59, 0.94);
+  border: 1px solid rgba(211, 198, 170, 0.16);
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.36);
+  padding: 10px 14px;
+}
+
+.vol-popup .vol-icon {
+  color: #d3c6aa;
+}
+
+.vol-slider {
+  min-width: 120px;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  -gtk-outline-radius: 0;
+}
+
+.vol-slider trough {
+  background-color: #3d484d;
+  border: none;
+  border-radius: 4px;
+  box-shadow: none;
+  min-height: 6px;
+  min-width: 120px;
+  outline: none;
+  -gtk-outline-radius: 0;
+}
+
+.vol-slider trough highlight {
+  background-color: #a7c080;
+  border: none;
+  border-radius: 4px;
+  box-shadow: none;
+  min-height: 6px;
+  outline: none;
+  -gtk-outline-radius: 0;
+}
+
+.vol-slider slider {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: none;
+  min-width: 14px;
+  min-height: 14px;
+  margin: -4px 0;
+  outline: none;
+  -gtk-outline-radius: 0;
+}
+
+.vol-slider:focus,
+.vol-slider:active,
+.vol-slider:focus trough,
+.vol-slider:active trough,
+.vol-slider:focus trough highlight,
+.vol-slider:active trough highlight,
+.vol-slider:focus slider,
+.vol-slider:active slider,
+.vol-slider trough:focus,
+.vol-slider trough:active,
+.vol-slider trough highlight:focus,
+.vol-slider trough highlight:active,
+.vol-slider slider:focus,
+.vol-slider slider:active {
+  border: none;
+  box-shadow: none;
+  outline: none;
+  -gtk-outline-radius: 0;
+}
+
+.cpu-box {
+  margin: 4px 0;
+  padding: 0 12px;
+  background-color: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.cpu-icon {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 17px;
+  color: #e0e0e0;
+  padding-right: 2px;
+}
+
+.mem-box {
+  margin: 4px 0;
+  padding: 0 12px;
+  background-color: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.mem-icon {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 14px;
+  color: #e0e0e0;
+  padding-right: 7px;
+}
+
+.net-box {
+  margin: 4px 0;
+  padding: 0 12px;
+  background-color: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.net-icon {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 16px;
+  color: #e0e0e0;
+}
+
+.battery-box {
+  margin: 4px 0;
+  padding: 0 12px;
+  background-color: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.battery-icon {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 16px;
+  color: #e0e0e0;
+  padding-right: 2px;
+}
+
+.battery-charging .battery-icon {
+  color: #a7c080;
+}
+
+.battery-charging .sysinfo-text {
+  color: #a7c080;
+}
+
+.battery-low .battery-icon {
+  color: #e67e80;
+}
+
+.battery-low .sysinfo-text {
+  color: #e67e80;
+}
+
+.launcher-btn {
+  background: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  border: none;
+  padding: 0 2px;
+  margin: 4px 0;
+  box-shadow: none;
+  outline: none;
+  -gtk-outline-radius: 0;
+  font-size: 17px;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  color: #e0e0e0;
+}
+
+.power-menu {
+  background-color: rgba(45, 53, 59, 0.94);
+  border: 1px solid rgba(211, 198, 170, 0.16);
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
+  padding: 6px;
+}
+
+.power-menu-item {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 10px;
+  box-shadow: none;
+  outline: none;
+  -gtk-outline-radius: 0;
+  min-width: 160px;
+}
+
+.power-menu-item:hover {
+  background-color: rgba(61, 72, 77, 0.82);
+}
+
+.power-menu-icon {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 14px;
+  color: #e0e0e0;
+  min-width: 20px;
+}
+
+.power-menu-text {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 14px;
+  color: #d3c6aa;
+}
+
+.power-menu-item-shutdown .power-menu-icon,
+.power-menu-item-shutdown .power-menu-text {
+  color: #e67e80;
+}
+
+.power-menu-sep {
+  background-color: rgba(211, 198, 170, 0.14);
+  min-height: 1px;
+  margin: 5px 10px;
+  padding: 0;
+}
