@@ -175,8 +175,12 @@ centerbox {
 
 .net-icon {
   font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 16px;
+  font-size: 14px;
   color: #e0e0e0;
+}
+
+.net-icon-wired {
+  font-size: 16px;
 }
 
 .battery-box {

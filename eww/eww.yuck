@@ -98,7 +98,7 @@
     :class "net-box"
     :spacing 6
     :space-evenly false
-    (label :class "net-icon" :text {net_icon})))
+    (label :class {net_icon == "󰌗" ? "net-icon net-icon-wired" : "net-icon"} :text {net_icon})))
 
 (defwidget battery-widget []
   (box
