@@ -76,7 +76,7 @@ def battery_status [] {
   let bat_list = (glob /sys/class/power_supply/BAT* | sort)
 
   if ($bat_list | is-empty) {
-    {capacity: 0, status: "Unknown", charging: false, low: false, icon: "󰂑"}
+    {available: false, capacity: 0, status: "Unknown", charging: false, low: false, icon: "󰂑"}
   } else {
     let bat = ($bat_list | first)
     let capacity = (open --raw $"($bat)/capacity" | str trim | into int)
@@ -86,7 +86,7 @@ def battery_status [] {
     let icon = (battery_icon $tier $charging)
     let low = ((not $charging) and ($capacity <= 15))
 
-    {capacity: $capacity, status: $status, charging: $charging, low: $low, icon: $icon}
+    {available: true, capacity: $capacity, status: $status, charging: $charging, low: $low, icon: $icon}
   }
 }
 

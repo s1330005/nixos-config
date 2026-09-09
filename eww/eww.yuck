@@ -102,6 +102,7 @@
 
 (defwidget battery-widget []
   (box
+    :visible {jq(battery, ".available") == "true"}
     :class {jq(battery, ".charging") == "true"
       ? "battery-box battery-charging"
       : (jq(battery, ".low") == "true" ? "battery-box battery-low" : "battery-box")}
