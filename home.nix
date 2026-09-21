@@ -100,6 +100,7 @@ in
     nodejs
     deno
     discord-ptb
+    signal-desktop
     slack
     github-cli
     inputs.codex-cli-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
