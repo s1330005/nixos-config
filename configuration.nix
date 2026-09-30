@@ -266,6 +266,7 @@
     papers
     resources
     foliate
+    keepassxc
     libreoffice-fresh
     tor-browser
     (chromium.override {
