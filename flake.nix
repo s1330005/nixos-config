@@ -16,7 +16,6 @@
     niri.url = "github:sodiboo/niri-flake";
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
-    llm-agents.url = "github:numtide/llm-agents.nix";
     flake-utils.url = "github:numtide/flake-utils";
     silentSDDM = {
       url = "github:uiriansan/SilentSDDM";
@@ -32,7 +31,6 @@
       niri,
       codex-cli-nix,
       claude-code-nix,
-      llm-agents,
       flake-utils,
       ...
     }:
@@ -51,11 +49,6 @@
             ./configuration.nix
             hostModule
             niri.nixosModules.niri
-            {
-              environment.systemPackages = [
-                llm-agents.packages.x86_64-linux.agent-browser
-              ];
-            }
             home-manager.nixosModules.home-manager
             {
               home-manager = {

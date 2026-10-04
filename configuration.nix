@@ -228,7 +228,6 @@
   # Apps
   nixpkgs.config.allowUnfree = true;
   documentation.nixos.enable = false; # hide NixOS documentation
-  programs.steam.enable = true;
   programs.xwayland.enable = true;
   services.gvfs.enable = true; # for nautilus
   environment.systemPackages = with pkgs; [
@@ -267,8 +266,6 @@
     resources
     foliate
     keepassxc
-    libreoffice-fresh
-    tor-browser
     (chromium.override {
       commandLineArgs = [
         "--enable-features=AcceleratedVideoEncoder,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"

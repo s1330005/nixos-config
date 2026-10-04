@@ -7,6 +7,13 @@
 
   networking.hostName = "laptop";
 
+  # Laptop-only apps
+  programs.steam.enable = true;
+  environment.systemPackages = with pkgs; [
+    thunderbird
+    libreoffice-fresh
+  ];
+
   # US keyboard (NixOS default, no xkb/keyMap override needed)
 
   # AMD iGPU + Nvidia GTX 1650 (prime offload) — specific to this machine's hardware

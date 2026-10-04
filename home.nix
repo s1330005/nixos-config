@@ -11,6 +11,7 @@ let
   # fcitx5's own keyboard layout should match the physical keyboard, which
   # differs per host (see hosts/<hostname>/default.nix).
   fcitxLayout = if osConfig.networking.hostName == "desktop" then "jp" else "us";
+  isLaptop = osConfig.networking.hostName == "laptop";
 in
 
 {
@@ -99,12 +100,13 @@ in
     go
     nodejs
     deno
-    discord-ptb
-    signal-desktop
-    slack
     github-cli
     inputs.codex-cli-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
+  ]
+  ++ lib.optionals isLaptop [
+    discord-ptb
+    slack
   ];
 
   # Cursor theme
@@ -523,7 +525,7 @@ in
     noDisplay = true;
     exec = "false";
   };
-  xdg.desktopEntries."discord-ptb" = {
+  xdg.desktopEntries."discord-ptb" = lib.mkIf isLaptop {
     name = "Discord";
     exec = "DiscordPTB";
     icon = "discord-ptb";
