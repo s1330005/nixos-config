@@ -55,13 +55,15 @@ layout {
         proportion 0.5
     }
     focus-ring {
+        off
         width 1
         active-color "#00000096"
         inactive-color "#00000096"
     }
     border {
+        off
         width 2
-        active-color "#A7C080CC"
+        active-color "#4C9AFFEE"
         inactive-color "#475258CC"
         urgent-color "#9b000096"
     }
@@ -99,6 +101,14 @@ window-rule {
     geometry-corner-radius 10
     clip-to-geometry true
     draw-border-with-background false
+}
+// Dim inactive windows
+window-rule {
+    match is-active=false
+    opacity 0.85
+    background-effect {
+        blur true
+    }
 }
 // Remove window background color
 layer-rule {
