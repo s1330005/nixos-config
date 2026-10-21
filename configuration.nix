@@ -151,9 +151,9 @@
   };
   programs.silentSDDM = {
     enable = true;
-    theme = "everforest";
+    theme = "default";
     settings = {
-      General.scale = 1.5;
+      General.scale = 0.5;
       "LockScreen.Clock" = {
         position = "top-center";
         format = "h:mm";
@@ -168,6 +168,11 @@
         margin-top = 3;
       };
     };
+  };
+
+  services.displayManager.sddm.settings.Theme = {
+    CursorTheme = "Yaru";
+    CursorSize = 24;
   };
 
   # Window manager

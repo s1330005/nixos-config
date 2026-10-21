@@ -401,7 +401,7 @@ in
   programs.ghostty = {
     enable = true;
     settings = {
-      theme = "Everforest Dark Hard";
+      theme = "Nvim Dark";
       background-opacity = 0.85;
       background-blur = true;
       window-padding-x = 8;
