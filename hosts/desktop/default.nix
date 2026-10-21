@@ -24,9 +24,6 @@
     tor-browser
     theharvester
 
-    # Browser
-    brave
-
     # Recon / OSINT
     subfinder
     maltego
