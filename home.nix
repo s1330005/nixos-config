@@ -28,17 +28,17 @@ in
     enable = true;
     settings = {
       global = {
-        font = "Noto Sans";
-        corner_radius = 12;
+        font = "Inter 10";
+        corner_radius = 8;
         frame_width = 1;
-        padding = 16;
-        horizontal_padding = 16;
+        padding = 12;
+        horizontal_padding = 14;
         icon_size = 48;
         origin = "top-right";
         offset = "8x35";
         width = 350;
         height = 300;
-        transparency = 10;
+        transparency = 0;
         stack_duplicates = false;
         gap_size = 5;
         notification_limit = 12;
@@ -47,23 +47,23 @@ in
       };
 
       urgency_low = {
-        background = "#2D353B";
-        foreground = "#D3C6AA";
-        frame_color = "#859289";
+        background = "#262626";
+        foreground = "#DADADA";
+        frame_color = "#3F3F3F";
         timeout = 6;
       };
 
       urgency_normal = {
-        background = "#2D353B";
-        foreground = "#D3C6AA";
-        frame_color = "#859289";
+        background = "#262626";
+        foreground = "#DADADA";
+        frame_color = "#3F3F3F";
         timeout = 8;
       };
 
       urgency_critical = {
-        background = "#2D353B";
-        foreground = "#D3C6AA";
-        frame_color = "#E67E80";
+        background = "#262626";
+        foreground = "#DADADA";
+        frame_color = "#FB464C";
         timeout = 0;
       };
     };

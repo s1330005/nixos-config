@@ -63,15 +63,15 @@ centerbox {
 }
 
 .vol-popup {
-  background-color: rgba(45, 53, 59, 0.94);
-  border: 1px solid rgba(211, 198, 170, 0.16);
-  border-radius: 14px;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.36);
+  background-color: #262626;
+  border: 1px solid #3f3f3f;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   padding: 10px 14px;
 }
 
 .vol-popup .vol-icon {
-  color: #d3c6aa;
+  color: #dadada;
 }
 
 .vol-slider {
@@ -83,7 +83,7 @@ centerbox {
 }
 
 .vol-slider trough {
-  background-color: #3d484d;
+  background-color: #3f3f3f;
   border: none;
   border-radius: 4px;
   box-shadow: none;
@@ -94,7 +94,7 @@ centerbox {
 }
 
 .vol-slider trough highlight {
-  background-color: #a7c080;
+  background-color: #7b6cd9;
   border: none;
   border-radius: 4px;
   box-shadow: none;
@@ -229,18 +229,18 @@ centerbox {
 }
 
 .power-menu {
-  background-color: rgba(45, 53, 59, 0.94);
-  border: 1px solid rgba(211, 198, 170, 0.16);
-  border-radius: 14px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.38);
-  padding: 6px;
+  background-color: #262626;
+  border: 1px solid #3f3f3f;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  padding: 4px;
 }
 
 .power-menu-item {
   background: transparent;
   border: none;
-  border-radius: 8px;
-  padding: 5px 10px;
+  border-radius: 4px;
+  padding: 4px 10px;
   box-shadow: none;
   outline: none;
   -gtk-outline-radius: 0;
@@ -248,30 +248,42 @@ centerbox {
 }
 
 .power-menu-item:hover {
-  background-color: rgba(61, 72, 77, 0.82);
+  background-color: #363636;
 }
 
 .power-menu-icon {
   font-family: "JetBrainsMono Nerd Font", monospace;
   font-size: 14px;
-  color: #e0e0e0;
+  color: #999999;
   min-width: 20px;
 }
 
 .power-menu-text {
-  font-family: "Noto Sans", sans-serif;
-  font-size: 14px;
-  color: #d3c6aa;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  color: #dadada;
+}
+
+.power-menu-item:hover .power-menu-icon {
+  color: #a99dff;
 }
 
 .power-menu-item-shutdown .power-menu-icon,
 .power-menu-item-shutdown .power-menu-text {
-  color: #e67e80;
+  color: #fb464c;
+}
+
+.power-menu-item-shutdown:hover {
+  background-color: rgba(251, 70, 76, 0.15);
+}
+
+.power-menu-item-shutdown:hover .power-menu-icon {
+  color: #fb464c;
 }
 
 .power-menu-sep {
-  background-color: rgba(211, 198, 170, 0.14);
+  background-color: #3f3f3f;
   min-height: 1px;
-  margin: 5px 10px;
+  margin: 4px 0;
   padding: 0;
 }
