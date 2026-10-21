@@ -198,19 +198,18 @@ centerbox {
   padding-right: 2px;
 }
 
-.battery-charging .battery-icon {
-  color: #a7c080;
+.battery-icon.bat-normal,
+.battery-text.bat-normal {
+  color: #e0e0e0;
 }
 
-.battery-charging .sysinfo-text {
-  color: #a7c080;
+.battery-icon.bat-charging,
+.battery-text.bat-charging {
+  color: #ffd60a;
 }
 
-.battery-low .battery-icon {
-  color: #e67e80;
-}
-
-.battery-low .sysinfo-text {
+.battery-icon.bat-low,
+.battery-text.bat-low {
   color: #e67e80;
 }
 

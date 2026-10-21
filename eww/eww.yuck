@@ -103,13 +103,15 @@
 (defwidget battery-widget []
   (box
     :visible {jq(battery, ".available") == "true"}
-    :class {jq(battery, ".charging") == "true"
-      ? "battery-box battery-charging"
-      : (jq(battery, ".low") == "true" ? "battery-box battery-low" : "battery-box")}
-    :spacing 6
+    :class "battery-box"
+    :spacing 2
     :space-evenly false
-    (label :class "battery-icon" :text {replace(jq(battery, ".icon"), "\"", "")})
-    (label :class "sysinfo-text" :text {jq(battery, ".capacity") + "%"})))
+    (label
+      :class {"battery-icon " + (jq(battery, ".charging") == "true" ? "bat-charging" : (jq(battery, ".low") == "true" ? "bat-low" : "bat-normal"))}
+      :text {replace(jq(battery, ".icon"), "\"", "")})
+    (label
+      :class {"sysinfo-text battery-text " + (jq(battery, ".charging") == "true" ? "bat-charging" : (jq(battery, ".low") == "true" ? "bat-low" : "bat-normal"))}
+      :text {jq(battery, ".capacity") + "%"})))
 
 (defwidget launcher []
   (button
@@ -131,6 +133,14 @@
         :space-evenly false
         (label :class "power-menu-icon" :text "󰀻")
         (label :class "power-menu-text" :text "Show Apps")))
+    (button
+      :class "power-menu-item"
+      :onclick "eww close power-menu-window && eww close power-menu-overlay-window && ~/.local/bin/eww-wallpaper next &"
+      (box
+        :spacing 10
+        :space-evenly false
+        (label :class "power-menu-icon" :text "󰸉")
+        (label :class "power-menu-text" :text "Wallpaper")))
     (box :class "power-menu-sep" :halign "fill")
     (button
       :class "power-menu-item"

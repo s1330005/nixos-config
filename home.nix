@@ -554,6 +554,11 @@ in
     source = ./scripts/eww-battery.nu;
   };
 
+  home.file.".local/bin/eww-wallpaper" = {
+    executable = true;
+    source = ./scripts/eww-wallpaper.nu;
+  };
+
   # lock screen
   xdg.configFile."hypr/hyprlock.conf" = {
     force = true;
