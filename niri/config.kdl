@@ -113,13 +113,13 @@ window-rule {
         xray false
     }
 }
-window-rule {
-    match app-id="Alacritty"
-    background-effect {
-        blur true
-        xray false
-    }
-}
+// window-rule {
+//     match app-id="Alacritty"
+//     background-effect {
+//         blur true
+//         xray false
+//     }
+// }
 window-rule {
     match app-id="dev.zed.Zed"
     opacity 0.88
@@ -162,8 +162,8 @@ binds {
     Mod+Shift+Slash {
         show-hotkey-overlay
     }
-    Mod+T hotkey-overlay-title="Open a Terminal: alacritty" {
-        spawn "alacritty"
+    Mod+G hotkey-overlay-title="Open a Terminal: ghostty" {
+        spawn "ghostty"
     }
     Mod+Space hotkey-overlay-title="Run an Application: walker" {
         spawn "walker"

@@ -398,49 +398,49 @@ in
   };
 
   # Ghostty
-  # programs.ghostty = {
-  #   enable = true;
-  #   settings = {
-  #     theme = "Everforest Dark Hard";
-  #     background-opacity = 0.85;
-  #     background-blur = true;
-  #     window-padding-x = 8;
-  #     window-padding-y = 8;
-  #     window-padding-balance = true;
-  #     font-family = [
-  #       "JetBrainsMonoNL Nerd Font Mono"
-  #       "IPAexGothic"
-  #       "Noto Sans CJK JP"
-  #     ];
-  #     font-size = 12;
-  #     font-style-bold = false;
-  #     font-style-italic = false;
-  #     font-style-bold-italic = false;
-  #   };
-  # };
-
-  # Alacritty
-  programs.alacritty = {
+  programs.ghostty = {
     enable = true;
-    theme = "everforest_dark_hard";
     settings = {
-      window = {
-        decorations = "none";
-        opacity = 0.95;
-        padding = {
-          x = 8;
-          y = 8;
-        };
-      };
-      font = {
-        normal = {
-          family = "JetBrainsMono Nerd Font";
-          style = "Regular";
-        };
-        size = 12.0;
-      };
+      theme = "Everforest Dark Hard";
+      background-opacity = 0.85;
+      background-blur = true;
+      window-padding-x = 8;
+      window-padding-y = 8;
+      window-padding-balance = true;
+      font-family = [
+        "JetBrainsMonoNL Nerd Font Mono"
+        "IPAexGothic"
+        "Noto Sans CJK JP"
+      ];
+      font-size = 12;
+      font-style-bold = false;
+      font-style-italic = false;
+      font-style-bold-italic = false;
     };
   };
+
+  # Alacritty
+  # programs.alacritty = {
+  #   enable = true;
+  #   theme = "everforest_dark_hard";
+  #   settings = {
+  #     window = {
+  #       decorations = "none";
+  #       opacity = 0.95;
+  #       padding = {
+  #         x = 8;
+  #         y = 8;
+  #       };
+  #     };
+  #     font = {
+  #       normal = {
+  #         family = "JetBrainsMono Nerd Font";
+  #         style = "Regular";
+  #       };
+  #       size = 12.0;
+  #     };
+  #   };
+  # };
 
   programs.firefox = {
     enable = true;
