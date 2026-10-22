@@ -73,6 +73,8 @@ in
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       color-scheme = "prefer-dark";
+      font-name = "Noto Sans 11";
+      document-font-name = "Noto Sans 11";
     };
   };
 
@@ -80,6 +82,7 @@ in
   dconf.settings = {
     "org/gnome/desktop/wm/preferences" = {
       button-layout = ":";
+      titlebar-font = "Noto Sans Bold 11";
     };
   };
 
