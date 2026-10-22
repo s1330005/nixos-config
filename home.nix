@@ -456,6 +456,17 @@ in
     source = ./niri/config.kdl;
   };
 
+  # Claude Code settings (shared across machines)
+  home.file.".claude/settings.json" = {
+    force = true;
+    source = ./claude/settings.json;
+  };
+
+  home.file.".claude/CLAUDE.md" = {
+    force = true;
+    source = ./claude/CLAUDE.md;
+  };
+
   # eww script for niri
   home.file.".local/bin/eww-start" = {
     executable = true;

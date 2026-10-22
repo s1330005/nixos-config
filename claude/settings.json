@@ -1,0 +1,34 @@
+{
+  "theme": "dark",
+  "switchModelsOnFlag": true,
+  "language": "japanese",
+  "includeCoAuthoredBy": false,
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(nix flake check:*)",
+      "Bash(nix eval:*)",
+      "Bash(nixos-rebuild build:*)",
+      "Bash(nixos-rebuild dry-build:*)"
+    ],
+    "ask": [
+      "Bash(git push:*)",
+      "Bash(nixos-rebuild switch:*)",
+      "Bash(nixos-rebuild boot:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(git reset --hard:*)"
+    ]
+  }
+}
