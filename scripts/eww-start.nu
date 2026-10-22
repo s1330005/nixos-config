@@ -22,7 +22,7 @@ def volume_icon [] {
   }
 }
 
-^eww open-many clock cpu-window mem-window launcher-window workspaces-window date-window volume-window net-window cputemp-window battery-window
+^eww open-many bar-window clock cpu-window mem-window launcher-window workspaces-window volume-window net-window battery-window
 sleep 300ms
 ^eww update $"volume_text=(volume_text)"
 ^eww update $"volume_icon=(volume_icon)"

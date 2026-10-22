@@ -2,18 +2,23 @@ window {
   background: transparent;
 }
 
+.bar {
+  background-color: rgba(30, 30, 32, 0.88);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
 .sysinfo-text {
-  font-family: "Inter", sans-serif;
+  font-family: "SF Pro Text", "Inter", sans-serif;
   font-size: 13px;
-  color: #e0e0e0;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .ws-box {
   margin: 4px 0;
   padding: 0 10px;
-  background-color: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background-color: transparent;
+  border: none;
 }
 
 .ws-label {
@@ -22,7 +27,7 @@ window {
   font-family: "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
   padding: 2px 8px;
-  border-radius: 50%;
+  border-radius: 8px;
 }
 
 .ws-label-active {
@@ -30,17 +35,20 @@ window {
   color: #e0e0e0;
   font-family: "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
+  font-weight: bold;
   padding: 2px 8px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.22);
 }
 
 .clock-box {
   margin: 4px 0;
-  background-color: rgba(20, 20, 20, 0.8);
-  color: #e0e0e0;
-  font-family: "Roboto", sans-serif;
-  font-size: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: "SF Pro Text", "Inter", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
 }
 
 centerbox {
@@ -50,9 +58,8 @@ centerbox {
 .vol-box {
   margin: 4px 0;
   padding: 0 12px;
-  background-color: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background-color: transparent;
+  border: none;
 }
 
 .vol-icon {
@@ -63,10 +70,10 @@ centerbox {
 }
 
 .vol-popup {
-  background-color: #262626;
-  border: 1px solid #3f3f3f;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  background-color: rgba(40, 40, 42, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
   padding: 10px 14px;
 }
 
@@ -83,7 +90,7 @@ centerbox {
 }
 
 .vol-slider trough {
-  background-color: #3f3f3f;
+  background-color: rgba(255, 255, 255, 0.2);
   border: none;
   border-radius: 4px;
   box-shadow: none;
@@ -94,7 +101,7 @@ centerbox {
 }
 
 .vol-slider trough highlight {
-  background-color: #7b6cd9;
+  background-color: #0a84ff;
   border: none;
   border-radius: 4px;
   box-shadow: none;
@@ -138,9 +145,8 @@ centerbox {
 .cpu-box {
   margin: 4px 0;
   padding: 0 12px;
-  background-color: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background-color: transparent;
+  border: none;
 }
 
 .cpu-icon {
@@ -153,9 +159,8 @@ centerbox {
 .mem-box {
   margin: 4px 0;
   padding: 0 12px;
-  background-color: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background-color: transparent;
+  border: none;
 }
 
 .mem-icon {
@@ -168,9 +173,8 @@ centerbox {
 .net-box {
   margin: 4px 0;
   padding: 0 12px;
-  background-color: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background-color: transparent;
+  border: none;
 }
 
 .net-icon {
@@ -186,9 +190,8 @@ centerbox {
 .battery-box {
   margin: 4px 0;
   padding: 0 12px;
-  background-color: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background-color: transparent;
+  border: none;
 }
 
 .battery-icon {
@@ -210,17 +213,14 @@ centerbox {
 
 .battery-icon.bat-low,
 .battery-text.bat-low {
-  color: #e67e80;
+  color: #ff453a;
 }
 
 .launcher-btn {
-  background: rgba(20, 20, 20, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background: transparent;
   border: none;
   padding: 0 2px;
   margin: 4px 0;
-  box-shadow: none;
   outline: none;
   -gtk-outline-radius: 0;
   font-size: 17px;
@@ -229,17 +229,17 @@ centerbox {
 }
 
 .power-menu {
-  background-color: #262626;
-  border: 1px solid #3f3f3f;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  background-color: rgba(40, 40, 42, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
   padding: 4px;
 }
 
 .power-menu-item {
   background: transparent;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 4px 10px;
   box-shadow: none;
   outline: none;
@@ -248,7 +248,7 @@ centerbox {
 }
 
 .power-menu-item:hover {
-  background-color: #363636;
+  background-color: #0a84ff;
 }
 
 .power-menu-icon {
@@ -259,30 +259,31 @@ centerbox {
 }
 
 .power-menu-text {
-  font-family: "Inter", sans-serif;
+  font-family: "SF Pro Text", "Inter", sans-serif;
   font-size: 13px;
-  color: #dadada;
+  color: rgba(255, 255, 255, 0.92);
 }
 
-.power-menu-item:hover .power-menu-icon {
-  color: #a99dff;
+.power-menu-item:hover .power-menu-icon,
+.power-menu-item:hover .power-menu-text {
+  color: #ffffff;
 }
 
 .power-menu-item-shutdown .power-menu-icon,
 .power-menu-item-shutdown .power-menu-text {
-  color: #fb464c;
+  color: #ff453a;
 }
 
 .power-menu-item-shutdown:hover {
-  background-color: rgba(251, 70, 76, 0.15);
+  background-color: #ff453a;
 }
 
 .power-menu-item-shutdown:hover .power-menu-icon {
-  color: #fb464c;
+  color: #ff453a;
 }
 
 .power-menu-sep {
-  background-color: #3f3f3f;
+  background-color: rgba(255, 255, 255, 0.14);
   min-height: 1px;
   margin: 4px 0;
   padding: 0;

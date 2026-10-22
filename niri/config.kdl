@@ -43,7 +43,8 @@ output "HDMI-A-1" {
     position x=0 y=0
 }
 layout {
-    gaps 8
+    // gaps 8
+    gaps 0
     center-focused-column "never"
     preset-column-widths {
         proportion 0.33333
@@ -73,7 +74,7 @@ layout {
         color "#0007"
     }
     struts {
-        top 28
+        top 32
     }
     tab-indicator {
         on
@@ -97,7 +98,8 @@ window-rule {
     block-out-from "screen-capture"
 }
 window-rule {
-    geometry-corner-radius 10
+    // geometry-corner-radius 10
+    geometry-corner-radius 0
     clip-to-geometry true
     draw-border-with-background false
 }
