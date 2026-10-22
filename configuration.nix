@@ -238,6 +238,7 @@
   environment.systemPackages = with pkgs; [
     inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
     eww
+    just
     wayland
     xwayland-satellite
     adwaita-icon-theme

@@ -92,22 +92,21 @@ swapon /dev/mapper/cryptswap
 lsblk
 ```
 
-Restore the config repo from the encrypted backup SSD (see [section 5](#5-config-repo-on-the-encrypted-ssd)).
+Restore `/etc/nixos` from the restic backup on the backup SSD (see [section 5](#5-config-repo-backup-with-restic)).
 Plug in the SSD and check its name with `lsblk` (e.g. `sdb1`; **not** the disk you just partitioned):
 
 ```sh
-cryptsetup open /dev/YYY1 nixos-ssd
-mount --mkdir /dev/mapper/nixos-ssd /media/nixos-ssd
+mount --mkdir /dev/YYY1 /media/nixos-ssd
 
-git -c safe.directory='*' clone /media/nixos-ssd/nixos.git /mnt/etc/nixos
-# if git is not available: nix-shell -p git --run "git -c safe.directory='*' clone /media/nixos-ssd/nixos.git /mnt/etc/nixos"
+nix-shell -p restic --run "restic -r /media/nixos-ssd/restic snapshots"
+nix-shell -p restic --run "restic -r /media/nixos-ssd/restic restore latest --path /etc/nixos --target /mnt"
+# restores to /mnt/etc/nixos. Add --host <hostname> to pick a specific machine's latest snapshot.
 
 umount /media/nixos-ssd
-cryptsetup close nixos-ssd
 ```
 
-The clone is a full copy, so the SSD can be unplugged right away. Its `origin` is
-`/media/nixos-ssd/nixos.git`, which is where section 5 mounts the SSD on the installed system.
+restic asks for the repository password (set in section 5). The restored `/mnt/etc/nixos` is a
+complete copy including `.git`, so the SSD can be unplugged right away.
 `nixos-install` below still needs a network connection to download packages and flake inputs.
 
 This repo defines one `nixosConfigurations` entry per machine under `hosts/<hostname>/`
@@ -197,72 +196,93 @@ git commit -m "first commit"
 nixos-rebuild switch --flake /etc/nixos#<hostname>
 ```
 
-Save the commit (it includes this machine's `hardware-configuration.nix`) back to the SSD as
-described in [section 5](#5-config-repo-on-the-encrypted-ssd), then `reboot`.
+Back up the result (it includes this machine's `hardware-configuration.nix`) to the SSD as
+described in [section 5](#5-config-repo-backup-with-restic), then `reboot`.
 
-## 5. Config repo on the encrypted SSD
+## 5. Config repo backup with restic
 
-The repo is kept as a bare git repository (`nixos.git`) on an external SSD formatted as
-ext4 inside a LUKS2 container. It plays the role GitHub would: both machines push to and pull
-from it, and section 3 restores from it. All commands below need root (`sudo -i`), since
-`/etc/nixos` and the repo on the SSD are owned by root.
+`/etc/nixos` is backed up with [restic](https://restic.net/) on its own (no git remote, no
+GitHub). The restic repository lives on an external SSD formatted as plain ext4; restic itself
+encrypts everything (data, file names, metadata) with the repository password. The backup includes `.git`, so the
+full commit history comes back with a restore. Section 3 restores from it. All commands below
+need root (`sudo -i`), since `/etc/nixos` is owned by root.
 
 ### One-time SSD setup
 
-**`luksFormat` erases the SSD.** Check the device name with `lsblk` first.
+**`mkfs.ext4` erases the SSD.** Check the device name with `lsblk` first.
 
 ```sh
-cryptsetup luksFormat --type luks2 /dev/YYY1
-cryptsetup open /dev/YYY1 nixos-ssd
-mkfs.ext4 -L nixos-ssd /dev/mapper/nixos-ssd
-mount --mkdir /dev/mapper/nixos-ssd /media/nixos-ssd
+mkfs.ext4 -L nixos-ssd /dev/YYY1
+mount --mkdir /dev/YYY1 /media/nixos-ssd
 
-git clone --bare /etc/nixos /media/nixos-ssd/nixos.git
-git -C /etc/nixos remote remove origin 2>/dev/null   # drop any old (e.g. GitHub) remote
-git -C /etc/nixos remote add origin /media/nixos-ssd/nixos.git
-git -C /etc/nixos fetch origin
-git -C /etc/nixos branch --set-upstream-to=origin/main main
+nix-shell -p restic --run "restic init -r /media/nixos-ssd/restic"   # asks for a repository password
 
 umount /media/nixos-ssd
-cryptsetup close nixos-ssd
 ```
 
-### Mounting and unmounting
+**Do not lose the restic password**: without it the backup cannot be read, and since it is the
+only protection, make it a strong passphrase. Store it somewhere other than this machine (e.g. a password manager).
 
-The SSD must be mounted at `/media/nixos-ssd` whenever you pull or push:
+### Backup
+
+With the SSD mounted:
 
 ```sh
-cryptsetup open /dev/YYY1 nixos-ssd
-mount --mkdir /dev/mapper/nixos-ssd /media/nixos-ssd
-# ... git pull / git push ...
+mount --mkdir /dev/YYY1 /media/nixos-ssd
+
+restic -r /media/nixos-ssd/restic backup /etc/nixos --tag nixos
+restic -r /media/nixos-ssd/restic forget --keep-last 10 --keep-monthly 12 --prune   # optional: thin out old snapshots
+
 umount /media/nixos-ssd
-cryptsetup close nixos-ssd
 ```
 
-Always `umount` and `cryptsetup close` before unplugging, or recent pushes may be lost.
+Always `umount` before unplugging. Snapshots are tagged with the
+machine's hostname automatically, so both machines can share one repository.
+
+### Restore
+
+List snapshots, then restore. Restoring to a temporary directory first is the safe way to look
+at or pick files from a backup:
+
+```sh
+restic -r /media/nixos-ssd/restic snapshots
+restic -r /media/nixos-ssd/restic restore latest --path /etc/nixos --target /tmp/nixos-restore
+# files are under /tmp/nixos-restore/etc/nixos
+```
+
+Restore only a single file:
+
+```sh
+restic -r /media/nixos-ssd/restic restore latest --path /etc/nixos --target /tmp/nixos-restore --include /etc/nixos/home.nix
+```
+
+Restore a whole machine from the live USB: see section 3. To overwrite the running
+`/etc/nixos` in place (**local changes are lost**):
+
+```sh
+restic -r /media/nixos-ssd/restic restore latest --path /etc/nixos --target /
+```
 
 ### Keeping two machines in sync
 
-Since each machine has its own `hosts/<hostname>/` directory, normal changes to
-`configuration.nix`/`home.nix` etc. never conflict with the other machine's hardware or
-keyboard settings. Workflow on each machine, with the SSD mounted:
+Each machine has its own `hosts/<hostname>/` directory, so `configuration.nix`/`home.nix`
+changes never overwrite the other machine's hardware or keyboard settings. Back up on each
+machine after changing the config. To take the other machine's changes, restore its latest
+snapshot to a temporary directory and merge with git:
 
 ```sh
+restic -r /media/nixos-ssd/restic restore latest --host <other-hostname> --path /etc/nixos --target /tmp/nixos-restore
 cd /etc/nixos
-git pull --rebase        # get the other machine's changes first
-# ... edit ...
-git add -A
-git commit -m "..."
-git push
+git pull /tmp/nixos-restore/etc/nixos main     # or: git fetch + git merge
 nixos-rebuild switch --flake /etc/nixos#<hostname>
 ```
 
-If `git push` is rejected because the other machine pushed first, `git pull --rebase` and
-push again. Conflicts (if any) will usually only show up in `flake.lock`; resolve by keeping
-either side and re-running `nix flake update` if needed.
+Conflicts (if any) will usually only show up in `flake.lock`; resolve by keeping either side
+and re-running `nix flake update` if needed.
 
 The SSD is the only copy outside the two machines; consider keeping a second one
-(`git push` to another LUKS SSD added with `git remote add ssd2 ...`).
+(`restic -r <second repo> copy --from-repo /media/nixos-ssd/restic`, or just run `backup`
+against both).
 
 ### Moving an already-installed machine onto this host layout
 
@@ -273,14 +293,14 @@ entries). Preserve that file instead of regenerating it. With the SSD mounted:
 ```sh
 cd /etc/nixos
 cp hardware-configuration.nix /tmp/hardware-configuration.nix.bak   # back up the real one first
-git remote set-url origin /media/nixos-ssd/nixos.git   # if origin still points elsewhere (e.g. GitHub)
-git fetch origin
-git reset --hard origin/main          # adopt the new repo layout
+restic -r /media/nixos-ssd/restic restore latest --path /etc/nixos --target /tmp/nixos-restore
+git fetch /tmp/nixos-restore/etc/nixos main
+git reset --hard FETCH_HEAD           # adopt the new repo layout
 cp /tmp/hardware-configuration.nix.bak hosts/<hostname>/hardware-configuration.nix
 nixos-rebuild switch --flake /etc/nixos#<hostname>
 git add hosts/<hostname>/hardware-configuration.nix
 git commit -m "Add hardware config for <hostname>"
-git push
+restic -r /media/nixos-ssd/restic backup /etc/nixos --tag nixos
 ```
 
 Only fall back to `nixos-generate-config --show-hardware-config` if that machine never had a
