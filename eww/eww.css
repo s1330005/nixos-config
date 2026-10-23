@@ -3,7 +3,7 @@ window {
 }
 
 .bar {
-  background-color: rgba(30, 30, 32, 0.88);
+  background-color: rgba(30, 30, 32, 0.6);
   border-bottom: 1px solid rgba(255, 255, 255, 0.14);
 }
 
@@ -12,11 +12,13 @@ window {
   font-size: 13px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.92);
+  min-width: 36px;
+  font-feature-settings: "tnum";
 }
 
 .ws-box {
   margin: 4px 0;
-  padding: 0 10px;
+  padding: 0 10px 0 0;
   background-color: transparent;
   border: none;
 }
@@ -38,7 +40,6 @@ window {
   font-weight: bold;
   padding: 2px 8px;
   border-radius: 8px;
-  background-color: rgba(255, 255, 255, 0.22);
 }
 
 .clock-box {

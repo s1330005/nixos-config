@@ -74,7 +74,7 @@ layout {
         color "#0007"
     }
     struts {
-        top 32
+        top 30
     }
     tab-indicator {
         on
