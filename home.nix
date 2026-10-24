@@ -556,10 +556,6 @@ in
     executable = true;
     source = ./scripts/eww-workspaces.nu;
   };
-  home.file.".local/bin/eww-volume-icon" = {
-    executable = true;
-    source = ./scripts/eww-volume-icon.nu;
-  };
   home.file.".local/bin/eww-volume-text" = {
     executable = true;
     source = ./scripts/eww-volume-text.nu;
@@ -567,6 +563,11 @@ in
   home.file.".local/bin/eww-battery" = {
     executable = true;
     source = ./scripts/eww-battery.nu;
+  };
+
+  home.file.".local/bin/eww-sysinfo" = {
+    executable = true;
+    source = ./scripts/eww-sysinfo.nu;
   };
 
   home.file.".local/bin/eww-wallpaper" = {

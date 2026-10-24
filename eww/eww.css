@@ -8,12 +8,11 @@ window {
 }
 
 .sysinfo-text {
-  font-family: "SF Pro Text", "Inter", sans-serif;
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.92);
   min-width: 36px;
-  font-feature-settings: "tnum";
 }
 
 .ws-box {
@@ -26,16 +25,23 @@ window {
 .ws-label {
   min-width: 20px;
   color: rgba(224, 224, 224, 0.5);
-  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
   padding: 2px 8px;
   border-radius: 8px;
 }
 
+.ws-sep {
+  color: rgba(224, 224, 224, 0.5);
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  padding: 2px 12px;
+}
+
 .ws-label-active {
   min-width: 20px;
   color: #e0e0e0;
-  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
   font-weight: bold;
   padding: 2px 8px;
@@ -46,9 +52,9 @@ window {
   margin: 4px 0;
   background-color: transparent;
   color: rgba(255, 255, 255, 0.92);
-  font-family: "SF Pro Text", "Inter", sans-serif;
-  font-size: 15px;
-  font-weight: 600;
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  font-weight: 500;
   border: none;
 }
 
@@ -58,234 +64,69 @@ centerbox {
 
 .vol-box {
   margin: 4px 0;
-  padding: 0 12px;
+  padding: 0 4px;
   background-color: transparent;
   border: none;
 }
 
 .vol-icon {
-  font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 16px;
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
   color: #e0e0e0;
-  padding-right: 2px;
-}
-
-.vol-popup {
-  background-color: rgba(40, 40, 42, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
-  padding: 10px 14px;
-}
-
-.vol-popup .vol-icon {
-  color: #dadada;
-}
-
-.vol-slider {
-  min-width: 120px;
-  border: none;
-  box-shadow: none;
-  outline: none;
-  -gtk-outline-radius: 0;
-}
-
-.vol-slider trough {
-  background-color: rgba(255, 255, 255, 0.2);
-  border: none;
-  border-radius: 4px;
-  box-shadow: none;
-  min-height: 6px;
-  min-width: 120px;
-  outline: none;
-  -gtk-outline-radius: 0;
-}
-
-.vol-slider trough highlight {
-  background-color: #0a84ff;
-  border: none;
-  border-radius: 4px;
-  box-shadow: none;
-  min-height: 6px;
-  outline: none;
-  -gtk-outline-radius: 0;
-}
-
-.vol-slider slider {
-  background-color: #ffffff;
-  border: none;
-  border-radius: 50%;
-  box-shadow: none;
-  min-width: 14px;
-  min-height: 14px;
-  margin: -4px 0;
-  outline: none;
-  -gtk-outline-radius: 0;
-}
-
-.vol-slider:focus,
-.vol-slider:active,
-.vol-slider:focus trough,
-.vol-slider:active trough,
-.vol-slider:focus trough highlight,
-.vol-slider:active trough highlight,
-.vol-slider:focus slider,
-.vol-slider:active slider,
-.vol-slider trough:focus,
-.vol-slider trough:active,
-.vol-slider trough highlight:focus,
-.vol-slider trough highlight:active,
-.vol-slider slider:focus,
-.vol-slider slider:active {
-  border: none;
-  box-shadow: none;
-  outline: none;
-  -gtk-outline-radius: 0;
 }
 
 .cpu-box {
   margin: 4px 0;
-  padding: 0 12px;
+  padding: 0 4px;
   background-color: transparent;
   border: none;
 }
 
 .cpu-icon {
-  font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 17px;
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
   color: #e0e0e0;
-  padding-right: 2px;
 }
 
 .mem-box {
   margin: 4px 0;
-  padding: 0 12px;
+  padding: 0 4px;
   background-color: transparent;
   border: none;
 }
 
 .mem-icon {
-  font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 14px;
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
   color: #e0e0e0;
-  padding-right: 7px;
 }
 
 .net-box {
   margin: 4px 0;
-  padding: 0 12px;
+  padding: 0 4px;
   background-color: transparent;
   border: none;
 }
 
 .net-icon {
-  font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 14px;
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
   color: #e0e0e0;
-}
-
-.net-icon-wired {
-  font-size: 16px;
 }
 
 .battery-box {
   margin: 4px 0;
-  padding: 0 12px;
+  padding: 0 4px;
   background-color: transparent;
   border: none;
 }
 
 .battery-icon {
-  font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 16px;
-  color: #e0e0e0;
-  padding-right: 2px;
-}
-
-.battery-icon.bat-normal,
-.battery-text.bat-normal {
-  color: #e0e0e0;
-}
-
-.battery-icon.bat-charging,
-.battery-text.bat-charging {
-  color: #ffd60a;
-}
-
-.battery-icon.bat-low,
-.battery-text.bat-low {
-  color: #ff453a;
-}
-
-.launcher-btn {
-  background: transparent;
-  border: none;
-  padding: 0 2px;
-  margin: 4px 0;
-  outline: none;
-  -gtk-outline-radius: 0;
-  font-size: 17px;
-  font-family: "JetBrainsMono Nerd Font", monospace;
-  color: #e0e0e0;
-}
-
-.power-menu {
-  background-color: rgba(40, 40, 42, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
-  padding: 4px;
-}
-
-.power-menu-item {
-  background: transparent;
-  border: none;
-  border-radius: 6px;
-  padding: 4px 10px;
-  box-shadow: none;
-  outline: none;
-  -gtk-outline-radius: 0;
-  min-width: 160px;
-}
-
-.power-menu-item:hover {
-  background-color: #0a84ff;
-}
-
-.power-menu-icon {
-  font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 14px;
-  color: #999999;
-  min-width: 20px;
-}
-
-.power-menu-text {
-  font-family: "SF Pro Text", "Inter", sans-serif;
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.92);
-}
-
-.power-menu-item:hover .power-menu-icon,
-.power-menu-item:hover .power-menu-text {
   color: #ffffff;
 }
 
-.power-menu-item-shutdown .power-menu-icon,
-.power-menu-item-shutdown .power-menu-text {
-  color: #ff453a;
-}
-
-.power-menu-item-shutdown:hover {
-  background-color: #ff453a;
-}
-
-.power-menu-item-shutdown:hover .power-menu-icon {
-  color: #ff453a;
-}
-
-.power-menu-sep {
-  background-color: rgba(255, 255, 255, 0.14);
-  min-height: 1px;
-  margin: 4px 0;
-  padding: 0;
+.battery-text {
+  color: #ffffff;
 }
