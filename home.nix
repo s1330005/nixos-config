@@ -560,6 +560,10 @@ in
     executable = true;
     source = ./scripts/eww-volume-text.nu;
   };
+  home.file.".local/bin/eww-vpn" = {
+    executable = true;
+    source = ./scripts/eww-vpn.nu;
+  };
   home.file.".local/bin/eww-battery" = {
     executable = true;
     source = ./scripts/eww-battery.nu;
@@ -568,6 +572,11 @@ in
   home.file.".local/bin/eww-sysinfo" = {
     executable = true;
     source = ./scripts/eww-sysinfo.nu;
+  };
+
+  home.file.".local/bin/eww-gpu" = {
+    executable = true;
+    source = pkgs.runCommandCC "eww-gpu" { nativeBuildInputs = [ pkgs.rustc ]; } "rustc --edition 2021 -C opt-level=2 -o $out ${./scripts/eww-gpu.rs}";
   };
 
   home.file.".local/bin/eww-wallpaper" = {

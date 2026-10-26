@@ -10,8 +10,14 @@
 (deflisten sysinfo :initial "{\"cpu\":0,\"mem\":0}"
   "~/.local/bin/eww-sysinfo")
 
+(deflisten gpu :initial ""
+  "~/.local/bin/eww-gpu")
+
 (deflisten net_icon :initial ""
   "~/.local/bin/eww-net-icon")
+
+(deflisten vpn :initial "OFF"
+  "~/.local/bin/eww-vpn")
 
 (deflisten battery :initial "{\"available\":false,\"capacity\":0,\"charging\":false}"
   "~/.local/bin/eww-battery")
@@ -73,6 +79,15 @@
     (label :valign "center" :class "cpu-icon" :text "CPU:")
     (label :valign "center" :xalign 0 :class "sysinfo-text" :text {jq(sysinfo, ".cpu") + "%"})))
 
+(defwidget gpu-widget []
+  (box
+    :visible {gpu != ""}
+    :class "gpu-box" :valign "center"
+    :spacing 6
+    :space-evenly false
+    (label :valign "center" :class "gpu-icon" :text "GPU:")
+    (label :valign "center" :xalign 0 :class "sysinfo-text" :text {gpu + "%"})))
+
 (defwidget mem-widget []
   (box
     :class "mem-box" :valign "center"
@@ -89,6 +104,14 @@
     (label :valign "center" :class "net-icon" :text "NET:")
     (label :valign "center" :xalign 0 :class "sysinfo-text" :text {net_icon == "󰌗" ? "ETH" : (net_icon == "" ? "WIFI" : "OFF")})))
 
+(defwidget vpn-widget []
+  (box
+    :class "vpn-box" :valign "center"
+    :spacing 6
+    :space-evenly false
+    (label :valign "center" :class "vpn-icon" :text "VPN:")
+    (label :valign "center" :xalign 0 :class "sysinfo-text" :text {vpn})))
+
 (defwidget battery-widget []
   (box
     :visible {jq(battery, ".available") == "true"}
@@ -102,7 +125,7 @@
     (label
       :valign "center"
       :xalign 0
-      :class "sysinfo-text battery-text"
+      :class "sysinfo-text"
       :text {jq(battery, ".capacity") + "%" + (jq(battery, ".charging") == "true" ? "+" : "")})))
 
 (defwindow bar-window
@@ -128,16 +151,23 @@
 (defwindow volume-window
   :monitor 0
   :windowtype "dock"
-  :geometry (geometry :x "268px" :y "0%" :width "82px" :height "30px" :anchor "top right")
+  :geometry (geometry :x "354px" :y "0%" :width "82px" :height "30px" :anchor "top right")
   :reserve (struts :side "top" :distance "20px")
   (volume-widget))
 
 (defwindow cpu-window
   :monitor 0
   :windowtype "dock"
-  :geometry (geometry :x "182px" :y "0%" :width "82px" :height "30px" :anchor "top right")
+  :geometry (geometry :x "268px" :y "0%" :width "82px" :height "30px" :anchor "top right")
   :reserve (struts :side "top" :distance "20px")
   (cpu-widget))
+
+(defwindow gpu-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "182px" :y "0%" :width "82px" :height "30px" :anchor "top right")
+  :reserve (struts :side "top" :distance "20px")
+  (gpu-widget))
 
 (defwindow mem-window
   :monitor 0
@@ -156,6 +186,13 @@
 (defwindow battery-window
   :monitor 0
   :windowtype "dock"
-  :geometry (geometry :x "354px" :y "0%" :width "82px" :height "30px" :anchor "top right")
+  :geometry (geometry :x "526px" :y "0%" :width "82px" :height "30px" :anchor "top right")
   :reserve (struts :side "top" :distance "20px")
   (battery-widget))
+
+(defwindow vpn-window
+  :monitor 0
+  :windowtype "dock"
+  :geometry (geometry :x "440px" :y "0%" :width "82px" :height "30px" :anchor "top right")
+  :reserve (struts :side "top" :distance "20px")
+  (vpn-widget))

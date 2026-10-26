@@ -72,7 +72,8 @@ centerbox {
 .vol-icon {
   font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
-  color: #e0e0e0;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .cpu-box {
@@ -85,7 +86,22 @@ centerbox {
 .cpu-icon {
   font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
-  color: #e0e0e0;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.gpu-box {
+  margin: 4px 0;
+  padding: 0 4px;
+  background-color: transparent;
+  border: none;
+}
+
+.gpu-icon {
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .mem-box {
@@ -98,7 +114,8 @@ centerbox {
 .mem-icon {
   font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
-  color: #e0e0e0;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .net-box {
@@ -111,7 +128,22 @@ centerbox {
 .net-icon {
   font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
-  color: #e0e0e0;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.vpn-box {
+  margin: 4px 0;
+  padding: 0 4px;
+  background-color: transparent;
+  border: none;
+}
+
+.vpn-icon {
+  font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
 }
 
 .battery-box {
@@ -124,9 +156,7 @@ centerbox {
 .battery-icon {
   font-family: "JetBrains Mono", "JetBrainsMono Nerd Font", monospace;
   font-size: 13px;
-  color: #ffffff;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.92);
 }
 
-.battery-text {
-  color: #ffffff;
-}

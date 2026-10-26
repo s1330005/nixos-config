@@ -1,7 +1,6 @@
 spawn-at-startup "awww-daemon"
 spawn-at-startup "awww-daemon" "-n" "overlay"
 spawn-at-startup "/home/sam/.local/bin/eww-wallpaper" "restore"
-spawn-at-startup "eww" "daemon"
 spawn-at-startup "/home/sam/.local/bin/eww-start"
 prefer-no-csd
 overview {
