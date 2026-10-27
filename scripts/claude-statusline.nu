@@ -37,7 +37,8 @@ def limit_text [label: string, limit] {
 }
 
 def main [] {
-  let s = (open --raw /dev/stdin | from json)
+  # Read via cat: `open /dev/stdin` fails when stdin is a socket
+  let s = (^cat | from json)
 
   let model = ($s.model?.display_name? | default "?")
   let ctx = ($s.context_window?.used_percentage?)
