@@ -463,6 +463,11 @@ in
     source = ./claude/settings.json;
   };
 
+  home.file.".claude/statusline.nu" = {
+    executable = true;
+    source = ./scripts/claude-statusline.nu;
+  };
+
   home.file.".claude/CLAUDE.md" = {
     force = true;
     source = ./claude/CLAUDE.md;

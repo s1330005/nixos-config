@@ -3,6 +3,10 @@
   "switchModelsOnFlag": true,
   "language": "japanese",
   "includeCoAuthoredBy": false,
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.nu"
+  },
   "attribution": {
     "commit": "",
     "pr": ""
