@@ -8,17 +8,16 @@ def pct_color [p: number] {
   if $p >= 80 { ansi red } else if $p >= 50 { ansi yellow } else { ansi green }
 }
 
-# Fixed-width gauge using eighth blocks so small changes stay visible
+# Fixed-width thin line gauge in half-cell steps (╸ is the half cap)
 def bar [p: number, width: int = 10] {
   let p = ([([$p 0] | math max) 100] | math min)
-  let eighths = ($p * $width * 8 / 100 | math round | into int)
-  let full = ($eighths // 8)
-  let rem = ($eighths mod 8)
-  let partial = if $rem > 0 { ["" "▏" "▎" "▍" "▌" "▋" "▊" "▉"] | get $rem } else { "" }
+  let halves = ($p * $width * 2 / 100 | math round | into int)
+  let full = ($halves // 2)
+  let partial = if ($halves mod 2) == 1 { "╸" } else { "" }
   let empty = ($width - $full - ($partial | str length --grapheme-clusters))
-  let filled = ("█" | fill --character "█" --width $full)
-  let rest = ("" | fill --character "·" --width $empty)
-  $"(pct_color $p)(if $full > 0 { $filled } else { '' })($partial)(ansi dark_gray)($rest)(ansi reset)"
+  let filled = ("" | fill --character "━" --width $full)
+  let rest = ("" | fill --character "─" --width $empty)
+  $"(pct_color $p)($filled)($partial)(ansi dark_gray)($rest)(ansi reset)"
 }
 
 def gauge [label: string, p: number] {
