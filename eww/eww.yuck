@@ -26,7 +26,7 @@
   (eventbox
     :onclick {"niri msg action focus-workspace " + jq(ws, ".id")}
     (label
-      :class {jq(ws, ".is_active") == "true" ? "ws-label-active" : "ws-label"}
+      :class {jq(ws, ".is_active") == "true" ? "ws-label-active ws-num" : "ws-label ws-num"}
       :text {jq(ws, ".idx")})))
 
 (defwidget app-label [app]

@@ -116,13 +116,13 @@ layer-rule {
     place-within-backdrop true
 }
 // Enable blur behind the foot terminal.
-window-rule {
-    match app-id="com.mitchellh.ghostty"
-    background-effect {
-        blur true
-        xray false
-    }
-}
+// window-rule {
+//     match app-id="com.mitchellh.ghostty"
+//     background-effect {
+//         blur true
+//         xray false
+//     }
+// }
 // window-rule {
 //     match app-id="Alacritty"
 //     background-effect {

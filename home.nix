@@ -193,8 +193,6 @@ in
     enable = true;
     settings = {
       theme = "Nvim Dark";
-      background-opacity = 0.9;
-      background-blur = true;
       window-padding-x = 8;
       window-padding-y = 8;
       window-padding-balance = true;
