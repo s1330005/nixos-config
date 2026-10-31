@@ -563,6 +563,12 @@ in
     };
   };
 
+  # XDG user directories (Desktop, Documents, Downloads, ...)
+  xdg.userDirs = {
+    enable = true;
+    createDirectories = true;
+  };
+
   # niri
   xdg.configFile."niri/config.kdl" = {
     force = true;
