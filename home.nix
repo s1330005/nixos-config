@@ -99,7 +99,8 @@ in
     typst
     python3
     inkscape
-    obsidian
+    # electron 43.8.3 renders a black window (webFrame TypeError in renderer_init)
+    (obsidian.override { electron = electron_42; })
     go
     nodejs
     deno
@@ -422,6 +423,17 @@ in
       soft_wrap = "none";
 
       title_bar.show_sign_in = false;
+    };
+  };
+
+  # VSCode
+  programs.vscode = {
+    enable = true;
+    profiles.default.userSettings = {
+      "editor.fontFamily" = "'JetBrainsMono Nerd Font', monospace";
+      "editor.fontLigatures" = true;
+      "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
+      "window.controlsStyle" = "hidden";
     };
   };
 

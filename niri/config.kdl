@@ -130,14 +130,6 @@ layer-rule {
 //         xray false
 //     }
 // }
-window-rule {
-    match app-id="dev.zed.Zed"
-    opacity 0.88
-    background-effect {
-        blur true
-        xray false
-    }
-}
 layer-rule {
     match namespace="notifications"
     opacity 0.9

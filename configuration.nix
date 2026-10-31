@@ -273,7 +273,6 @@
     resources
     foliate
     keepassxc
-    vscode
     (chromium.override {
       commandLineArgs = [
         "--enable-features=AcceleratedVideoEncoder,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
