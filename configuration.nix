@@ -59,9 +59,9 @@
   };
   networking.firewall.checkReversePath = false; # for VPN
 
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
-  services.blueman.enable = true;
+  #hardware.bluetooth.enable = true;
+  #hardware.bluetooth.powerOnBoot = true;
+  #services.blueman.enable = true;
   services.upower.enable = true;
 
   services.snapper = {
