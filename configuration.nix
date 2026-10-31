@@ -265,7 +265,6 @@
 
     gnome-calculator
     gnome-disk-utility
-    gnome-characters
     gnome-font-viewer
     loupe
     papers
