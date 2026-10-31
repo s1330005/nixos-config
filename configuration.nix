@@ -262,6 +262,9 @@
     wine64
     jaq
     numbat
+    dust
+    dysk
+    caligula
 
     gnome-calculator
     gnome-disk-utility
