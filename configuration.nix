@@ -261,9 +261,8 @@
     steam-run
     wine64
     jaq
+    numbat
 
-    nautilus
-    amberol
     gnome-calculator
     gnome-disk-utility
     gnome-characters
@@ -305,38 +304,33 @@
     "image/bmp" = "org.gnome.Loupe.desktop";
     "image/tiff" = "org.gnome.Loupe.desktop";
     "image/webp" = "org.gnome.Loupe.desktop";
-    "audio/wav" = [ "amberol.desktop" ];
-    "audio/x-wav" = [ "amberol.desktop" ];
-    "audio/mpeg" = [ "amberol.desktop" ];
-    "audio/mp3" = [ "amberol.desktop" ];
-    "audio/flac" = [ "amberol.desktop" ];
-    "text/plain" = "dev.zed.Zed.desktop";
-    "text/x-python" = "dev.zed.Zed.desktop";
-    "text/x-csrc" = "dev.zed.Zed.desktop";
-    "text/x-chdr" = "dev.zed.Zed.desktop";
-    "text/x-c++src" = "dev.zed.Zed.desktop";
-    "text/x-java" = "dev.zed.Zed.desktop";
-    "text/x-rust" = "dev.zed.Zed.desktop";
-    "text/x-shellscript" = "dev.zed.Zed.desktop";
-    "text/x-script.python" = "dev.zed.Zed.desktop";
-    "text/javascript" = "dev.zed.Zed.desktop";
-    "text/typescript" = "dev.zed.Zed.desktop";
-    "text/x-lua" = "dev.zed.Zed.desktop";
-    "text/x-makefile" = "dev.zed.Zed.desktop";
-    "text/markdown" = "dev.zed.Zed.desktop";
-    "text/x-markdown" = "dev.zed.Zed.desktop";
-    "text/css" = "dev.zed.Zed.desktop";
-    "text/xml" = "dev.zed.Zed.desktop";
-    "text/yaml" = "dev.zed.Zed.desktop";
-    "text/x-yaml" = "dev.zed.Zed.desktop";
-    "text/x-toml" = "dev.zed.Zed.desktop";
-    "application/json" = "dev.zed.Zed.desktop";
-    "application/x-yaml" = "dev.zed.Zed.desktop";
-    "application/xml" = "dev.zed.Zed.desktop";
-    "application/javascript" = "dev.zed.Zed.desktop";
-    "application/x-sh" = "dev.zed.Zed.desktop";
-    "application/x-shellscript" = "dev.zed.Zed.desktop";
-    "application/toml" = "dev.zed.Zed.desktop";
+    "text/plain" = "helix-alacritty.desktop";
+    "text/x-python" = "helix-alacritty.desktop";
+    "text/x-csrc" = "helix-alacritty.desktop";
+    "text/x-chdr" = "helix-alacritty.desktop";
+    "text/x-c++src" = "helix-alacritty.desktop";
+    "text/x-java" = "helix-alacritty.desktop";
+    "text/x-rust" = "helix-alacritty.desktop";
+    "text/x-shellscript" = "helix-alacritty.desktop";
+    "text/x-script.python" = "helix-alacritty.desktop";
+    "text/javascript" = "helix-alacritty.desktop";
+    "text/typescript" = "helix-alacritty.desktop";
+    "text/x-lua" = "helix-alacritty.desktop";
+    "text/x-makefile" = "helix-alacritty.desktop";
+    "text/markdown" = "helix-alacritty.desktop";
+    "text/x-markdown" = "helix-alacritty.desktop";
+    "text/css" = "helix-alacritty.desktop";
+    "text/xml" = "helix-alacritty.desktop";
+    "text/yaml" = "helix-alacritty.desktop";
+    "text/x-yaml" = "helix-alacritty.desktop";
+    "text/x-toml" = "helix-alacritty.desktop";
+    "application/json" = "helix-alacritty.desktop";
+    "application/x-yaml" = "helix-alacritty.desktop";
+    "application/xml" = "helix-alacritty.desktop";
+    "application/javascript" = "helix-alacritty.desktop";
+    "application/x-sh" = "helix-alacritty.desktop";
+    "application/x-shellscript" = "helix-alacritty.desktop";
+    "application/toml" = "helix-alacritty.desktop";
   };
 
   # Make the bash script work
@@ -361,13 +355,29 @@
 
     fontconfig = {
       defaultFonts = {
-        sansSerif = [ "Noto Sans CJK JP" ];
+        sansSerif = [
+          "Noto Sans CJK JP"
+          "Noto Color Emoji"
+        ];
         serif = [
           "Noto Serif CJK JP"
           "Noto Color Emoji"
         ];
         emoji = [ "Noto Color Emoji" ];
       };
+      # google-fonts の Noto Color Emoji は COLRv1 形式で Alacritty が描画できないため除外
+      # (noto-fonts-color-emoji の CBDT 版を使う)
+      localConf = ''
+        <?xml version="1.0"?>
+        <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+        <fontconfig>
+          <selectfont>
+            <rejectfont>
+              <glob>*-google-fonts-*/NotoColorEmoji*.ttf</glob>
+            </rejectfont>
+          </selectfont>
+        </fontconfig>
+      '';
     };
   };
 

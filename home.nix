@@ -190,47 +190,121 @@ in
   };
 
   # Ghostty
-  programs.ghostty = {
+  # programs.ghostty = {
+  #   enable = true;
+  #   settings = {
+  #     theme = "Nvim Dark";
+  #     window-padding-x = 8;
+  #     window-padding-y = 8;
+  #     window-padding-balance = true;
+  #     font-family = [
+  #       "JetBrainsMonoNL Nerd Font Mono"
+  #       "IPAexGothic"
+  #       "Noto Sans CJK JP"
+  #     ];
+  #     font-size = 12;
+  #     font-style-bold = false;
+  #     font-style-italic = false;
+  #     font-style-bold-italic = false;
+  #   };
+  # };
+
+  # Alacritty (Ghostty と同じ見た目)
+  programs.alacritty = {
     enable = true;
     settings = {
-      theme = "Nvim Dark";
-      window-padding-x = 8;
-      window-padding-y = 8;
-      window-padding-balance = true;
-      font-family = [
-        "JetBrainsMonoNL Nerd Font Mono"
-        "IPAexGothic"
-        "Noto Sans CJK JP"
-      ];
-      font-size = 12;
-      font-style-bold = false;
-      font-style-italic = false;
-      font-style-bold-italic = false;
+      window = {
+        decorations = "none";
+        padding = {
+          x = 8;
+          y = 8;
+        };
+        dynamic_padding = true;
+      };
+      font = let
+        family = "JetBrainsMonoNL Nerd Font Mono";
+      in {
+        normal = {
+          inherit family;
+          style = "Regular";
+        };
+        bold = {
+          inherit family;
+          style = "Regular";
+        };
+        italic = {
+          inherit family;
+          style = "Regular";
+        };
+        bold_italic = {
+          inherit family;
+          style = "Regular";
+        };
+        size = 12.0;
+      };
+      # Ghostty "Nvim Dark" theme
+      colors = {
+        primary = {
+          background = "#14161b";
+          foreground = "#e0e2ea";
+        };
+        cursor = {
+          text = "#e0e2ea";
+          cursor = "#9b9ea4";
+        };
+        selection = {
+          text = "#e0e2ea";
+          background = "#4f5258";
+        };
+        normal = {
+          black = "#07080d";
+          red = "#ffc0b9";
+          green = "#b3f6c0";
+          yellow = "#fce094";
+          blue = "#a6dbff";
+          magenta = "#ffcaff";
+          cyan = "#8cf8f7";
+          white = "#eef1f8";
+        };
+        bright = {
+          black = "#4f5258";
+          red = "#ffc0b9";
+          green = "#b3f6c0";
+          yellow = "#fce094";
+          blue = "#a6dbff";
+          magenta = "#ffcaff";
+          cyan = "#8cf8f7";
+          white = "#eef1f8";
+        };
+      };
     };
   };
 
-  # Alacritty
-  # programs.alacritty = {
-  #   enable = true;
-  #   theme = "everforest_dark_hard";
-  #   settings = {
-  #     window = {
-  #       decorations = "none";
-  #       opacity = 0.95;
-  #       padding = {
-  #         x = 8;
-  #         y = 8;
-  #       };
-  #     };
-  #     font = {
-  #       normal = {
-  #         family = "JetBrainsMono Nerd Font";
-  #         style = "Regular";
-  #       };
-  #       size = 12.0;
-  #     };
-  #   };
-  # };
+  # File Manager
+  programs.yazi = {
+    enable = true;
+    enableNushellIntegration = true;
+    settings.opener.edit = [
+      {
+        run = "hx \"$@\"";
+        block = true;
+        for = "unix";
+      }
+    ];
+  };
+
+  # Music Player (rmpc + MPD)
+  services.mpd = {
+    enable = true;
+    musicDirectory = "${config.home.homeDirectory}/Music";
+    extraConfig = ''
+      audio_output {
+        type "pipewire"
+        name "PipeWire"
+      }
+    '';
+  };
+  programs.rmpc.enable = true;
 
   programs.firefox = {
     enable = true;
@@ -326,6 +400,26 @@ in
     ];
   };
 
+  # 標準の Helix.desktop は Terminal=true で Alacritty から起動できないため隠す
+  xdg.desktopEntries."Helix" = {
+    name = "Helix";
+    noDisplay = true;
+    exec = "false";
+  };
+
+  # Helix を Alacritty 内で開く (ファイル関連付け用)
+  xdg.desktopEntries."helix-alacritty" = {
+    name = "Helix";
+    genericName = "Text Editor";
+    exec = "alacritty -e hx %F";
+    icon = "helix";
+    terminal = false;
+    categories = [
+      "Utility"
+      "TextEditor"
+    ];
+  };
+
   # Text Editor
   programs.helix = {
     enable = true;
@@ -383,56 +477,64 @@ in
     };
   };
 
-  programs.zed-editor = {
-    enable = true;
+  #programs.zed-editor = {
+    #enable = true;
 
-    userSettings = {
-      cli_default_open_behavior = "existing_window";
-      diff_view_style = "unified";
+    #userSettings = {
+      #cli_default_open_behavior = "existing_window";
+      #diff_view_style = "unified";
 
-      project_panel.dock = "left";
-      outline_panel.dock = "left";
-      collaboration_panel.dock = "left";
-      git_panel.dock = "left";
+      #project_panel.dock = "left";
+      #outline_panel.dock = "left";
+      #collaboration_panel.dock = "left";
+      #git_panel.dock = "left";
 
-      agent = {
-        dock = "right";
-        favorite_models = [ ];
-        model_parameters = [ ];
-      };
+      #agent = {
+        #dock = "right";
+        #favorite_models = [ ];
+        #model_parameters = [ ];
+      #};
 
-      telemetry = {
-        diagnostics = false;
-        metrics = false;
-      };
+      #telemetry = {
+        #diagnostics = false;
+        #metrics = false;
+      #};
 
-      session.trust_all_worktrees = true;
+      #session.trust_all_worktrees = true;
 
-      icon_theme = "Zed (Default)";
-      ui_font_size = 16;
-      buffer_font_size = 14.5;
-      buffer_font_family = "JetBrainsMono Nerd Font";
-      buffer_line_height = "standard";
+      #icon_theme = "Zed (Default)";
+      #ui_font_size = 16;
+      #buffer_font_size = 14.5;
+      #buffer_font_family = "JetBrainsMono Nerd Font";
+      #buffer_font_fallbacks = [
+        #"IPAexGothic"
+        #"Noto Sans CJK JP"
+      #];
+      #terminal.font_fallbacks = [
+        #"IPAexGothic"
+        #"Noto Sans CJK JP"
+      #];
+      #buffer_line_height = "standard";
 
-      theme = {
-        mode = "dark";
-        light = "One Light";
-        dark = "Everforest Dark Hard (material)";
-      };
+      #theme = {
+        #mode = "dark";
+        #light = "One Light";
+        #dark = "Everforest Dark Hard (material)";
+      #};
 
-      soft_wrap = "none";
+      #soft_wrap = "none";
 
-      title_bar.show_sign_in = false;
-    };
-  };
+      #title_bar.show_sign_in = false;
+    #};
+  #};
 
   # VSCode
   programs.vscode = {
     enable = true;
     profiles.default.userSettings = {
-      "editor.fontFamily" = "'JetBrainsMono Nerd Font', monospace";
+      "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'IPAexGothic', 'Noto Sans CJK JP', monospace";
       "editor.fontLigatures" = true;
-      "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font'";
+      "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font', 'IPAexGothic', 'Noto Sans CJK JP'";
       "window.controlsStyle" = "hidden";
     };
   };

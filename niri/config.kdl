@@ -158,14 +158,14 @@ binds {
     Mod+B hotkey-overlay-title="Open a Browser: firefox" {
         spawn "firefox"
     }
-    Mod+N hotkey-overlay-title="Open a File Explorer" {
-        spawn "nautilus"
+    Mod+N hotkey-overlay-title="Open a File Explorer: yazi" {
+        spawn "alacritty" "-e" "yazi"
     }
     Mod+Shift+Slash {
         show-hotkey-overlay
     }
-    Mod+G hotkey-overlay-title="Open a Terminal: ghostty" {
-        spawn "ghostty"
+    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" {
+        spawn "alacritty"
     }
     Mod+Space hotkey-overlay-title="Run an Application: walker" {
         spawn "walker"
