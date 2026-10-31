@@ -265,6 +265,7 @@
     dust
     dysk
     caligula
+    meli
 
     gnome-calculator
     gnome-disk-utility
