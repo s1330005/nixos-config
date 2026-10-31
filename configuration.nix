@@ -135,6 +135,8 @@
   };
   environment.variables = {
     GTK_IM_MODULE = lib.mkForce ""; # hide the message displayed at startup
+    EDITOR = "hx";
+    VISUAL = "hx";
   };
 
   # Keyboard layout is host-specific; see hosts/<hostname>/default.nix
