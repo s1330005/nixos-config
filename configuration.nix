@@ -42,18 +42,16 @@
     wg0 = {
       address = [
         "10.2.0.2/32"
-        "2a07:b944::2:2/128"
       ];
       privateKeyFile = "/etc/wireguard/proton-privatekey";
       dns = [
         "10.2.0.1"
-        "2a07:b944::2:1"
       ];
 
       peers = [{
-        publicKey = "dnLzpdaCyBlnnYS9iBwhPXoTXBQQNStT6/Tx6CytOmg=";
+        publicKey = "7FslkahrdLwGbv4QSX5Cft5CtQLmBUlpWC382SSF7Hw=";
         allowedIPs = [ "0.0.0.0/0" "::/0" ];
-        endpoint = "146.70.202.162:51820";
+        endpoint = "103.125.235.19:51820";
       }];
     };
   };
