@@ -10,7 +10,6 @@
   # Laptop-only apps
   programs.steam.enable = true;
   environment.systemPackages = with pkgs; [
-    thunderbird
     libreoffice-fresh
   ];
 
