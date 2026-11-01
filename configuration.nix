@@ -269,7 +269,6 @@
     caligula
     meli
 
-    gnome-calculator
     gnome-font-viewer
     loupe
     papers
