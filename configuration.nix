@@ -270,7 +270,6 @@
     caligula
     meli
 
-    gnome-font-viewer
     keepassxc
     (chromium.override {
       commandLineArgs = [

@@ -31,6 +31,26 @@ let
     done
     "$zellij" action focus-pane-id "$pane"
   '';
+  # 選択行の両端の丸いグリフを全塗りブロックにして四角いハイライトにする (幅は変えない)
+  yaziTheme.indicator.padding = {
+    open = "█";
+    close = "█";
+  };
+  # ステータスバーのモード表示: Nvim Dark では blue/red が明るく既定の文字色 (白系) と gray 背景だと読みにくいので、
+  # 文字を黒、副セグメントの背景を darkgray にする
+  yaziTheme.mode = {
+    normal_main = { fg = "black"; bg = "blue"; bold = true; };
+    normal_alt = { fg = "blue"; bg = "darkgray"; };
+    select_main = { fg = "black"; bg = "red"; bold = true; };
+    select_alt = { fg = "red"; bg = "darkgray"; };
+    unset_main = { fg = "black"; bg = "red"; bold = true; };
+    unset_alt = { fg = "red"; bg = "darkgray"; };
+  };
+  # PDF は Enter で外部ウィンドウではなく端末内の tdf で開く (画像は既定どおり xdg-open → viu-ghostty の別ウィンドウ)
+  yaziOpenRules.prepend_rules = [
+    { mime = "application/pdf"; use = [ "view-pdf" ]; }
+  ];
+  yaziViewPdf = lib.getExe pkgs.tdf;
   yaziSidebar = pkgs.writeShellScript "yazi-sidebar" ''
     YAZI_CONFIG_HOME=${config.xdg.configHome}/yazi-sidebar exec yazi "$@"
   '';
@@ -313,9 +333,18 @@ in
   programs.yazi = {
     enable = true;
     enableNushellIntegration = true;
+    theme = yaziTheme;
+    settings.open = yaziOpenRules;
     settings.opener.edit = [
       {
         run = "hx \"$@\"";
+        block = true;
+        for = "unix";
+      }
+    ];
+    settings.opener.view-pdf = [
+      {
+        run = "${yaziViewPdf} \"$1\"";
         block = true;
         for = "unix";
       }
@@ -358,13 +387,23 @@ in
       1
       0
     ];
+    open = yaziOpenRules;
     opener.edit = [
       {
         run = "${yaziOpenInHelix} \"$@\"";
         for = "unix";
       }
     ];
+    # サイドバーは狭いので zellij のフローティングペインで開く (閉じるとペインも消える)
+    opener.view-pdf = [
+      {
+        run = "${lib.getExe config.programs.zellij.package} run --floating --close-on-exit -- ${yaziViewPdf} \"$1\"";
+        for = "unix";
+      }
+    ];
   };
+
+  xdg.configFile."yazi-sidebar/theme.toml".source = (pkgs.formats.toml { }).generate "yazi-sidebar-theme.toml" yaziTheme;
 
   # Music Player (rmpc + MPD)
   services.mpd = {
