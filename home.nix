@@ -106,11 +106,12 @@ in
     deno
     github-cli
     fd
+    simplex-chat-desktop
+    tdf
     inputs.codex-cli-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
   ]
   ++ lib.optionals isLaptop [
-    discord-ptb
     slack
   ];
 
@@ -190,95 +191,129 @@ in
   };
 
   # Ghostty
-  # programs.ghostty = {
-  #   enable = true;
-  #   settings = {
-  #     theme = "Nvim Dark";
-  #     window-padding-x = 8;
-  #     window-padding-y = 8;
-  #     window-padding-balance = true;
-  #     font-family = [
-  #       "JetBrainsMonoNL Nerd Font Mono"
-  #       "IPAexGothic"
-  #       "Noto Sans CJK JP"
-  #     ];
-  #     font-size = 12;
-  #     font-style-bold = false;
-  #     font-style-italic = false;
-  #     font-style-bold-italic = false;
-  #   };
-  # };
-
-  # Alacritty (Ghostty と同じ見た目)
-  programs.alacritty = {
+  programs.ghostty = {
     enable = true;
     settings = {
-      window = {
-        decorations = "none";
-        padding = {
-          x = 8;
-          y = 8;
-        };
-        dynamic_padding = true;
-      };
-      font = let
-        family = "JetBrainsMonoNL Nerd Font Mono";
-      in {
-        normal = {
-          inherit family;
-          style = "Regular";
-        };
-        bold = {
-          inherit family;
-          style = "Regular";
-        };
-        italic = {
-          inherit family;
-          style = "Regular";
-        };
-        bold_italic = {
-          inherit family;
-          style = "Regular";
-        };
-        size = 12.0;
-      };
-      # Ghostty "Nvim Dark" theme
-      colors = {
-        primary = {
-          background = "#14161b";
-          foreground = "#e0e2ea";
-        };
-        cursor = {
-          text = "#e0e2ea";
-          cursor = "#9b9ea4";
-        };
-        selection = {
-          text = "#e0e2ea";
-          background = "#4f5258";
-        };
-        normal = {
-          black = "#07080d";
-          red = "#ffc0b9";
-          green = "#b3f6c0";
-          yellow = "#fce094";
-          blue = "#a6dbff";
-          magenta = "#ffcaff";
-          cyan = "#8cf8f7";
-          white = "#eef1f8";
-        };
-        bright = {
-          black = "#4f5258";
-          red = "#ffc0b9";
-          green = "#b3f6c0";
-          yellow = "#fce094";
-          blue = "#a6dbff";
-          magenta = "#ffcaff";
-          cyan = "#8cf8f7";
-          white = "#eef1f8";
-        };
-      };
+      theme = "Nvim Dark";
+      window-padding-x = 8;
+      window-padding-y = 8;
+      window-padding-balance = true;
+      font-family = [
+        "JetBrainsMonoNL Nerd Font Mono"
+        "IPAexGothic"
+        "Noto Sans CJK JP"
+      ];
+      font-size = 12;
+      font-style-bold = false;
+      font-style-italic = false;
+      font-style-bold-italic = false;
     };
   };
+
+  # WezTerm (Ghostty と同じ見た目)
+  programs.wezterm = {
+    enable = true;
+    extraConfig = ''
+      return {
+        font = wezterm.font_with_fallback({
+          { family = "JetBrainsMonoNL Nerd Font Mono", weight = "Regular" },
+          "IPAexGothic",
+          "Noto Sans CJK JP",
+        }),
+        font_size = 12.0,
+        font_rules = {
+          { intensity = "Bold", font = wezterm.font("JetBrainsMonoNL Nerd Font Mono", { weight = "Regular" }) },
+          { italic = true, font = wezterm.font("JetBrainsMonoNL Nerd Font Mono", { weight = "Regular", italic = false }) },
+        },
+        window_padding = { left = 8, right = 8, top = 8, bottom = 8 },
+        window_decorations = "NONE",
+        hide_tab_bar_if_only_one_tab = true,
+        -- Ghostty "Nvim Dark" theme
+        colors = {
+          background = "#14161b",
+          foreground = "#e0e2ea",
+          cursor_bg = "#9b9ea4",
+          cursor_border = "#9b9ea4",
+          cursor_fg = "#e0e2ea",
+          selection_bg = "#4f5258",
+          selection_fg = "#e0e2ea",
+          ansi = { "#07080d", "#ffc0b9", "#b3f6c0", "#fce094", "#a6dbff", "#ffcaff", "#8cf8f7", "#eef1f8" },
+          brights = { "#4f5258", "#ffc0b9", "#b3f6c0", "#fce094", "#a6dbff", "#ffcaff", "#8cf8f7", "#eef1f8" },
+        },
+      }
+    '';
+  };
+
+  # Alacritty (Ghostty と同じ見た目)
+  # programs.alacritty = {
+  #   enable = true;
+  #   settings = {
+  #     window = {
+  #       decorations = "none";
+  #       padding = {
+  #         x = 8;
+  #         y = 8;
+  #       };
+  #       dynamic_padding = true;
+  #     };
+  #     font = let
+  #       family = "JetBrainsMonoNL Nerd Font Mono";
+  #     in {
+  #       normal = {
+  #         inherit family;
+  #         style = "Regular";
+  #       };
+  #       bold = {
+  #         inherit family;
+  #         style = "Regular";
+  #       };
+  #       italic = {
+  #         inherit family;
+  #         style = "Regular";
+  #       };
+  #       bold_italic = {
+  #         inherit family;
+  #         style = "Regular";
+  #       };
+  #       size = 12.0;
+  #     };
+  #     # Ghostty "Nvim Dark" theme
+  #     colors = {
+  #       primary = {
+  #         background = "#14161b";
+  #         foreground = "#e0e2ea";
+  #       };
+  #       cursor = {
+  #         text = "#e0e2ea";
+  #         cursor = "#9b9ea4";
+  #       };
+  #       selection = {
+  #         text = "#e0e2ea";
+  #         background = "#4f5258";
+  #       };
+  #       normal = {
+  #         black = "#07080d";
+  #         red = "#ffc0b9";
+  #         green = "#b3f6c0";
+  #         yellow = "#fce094";
+  #         blue = "#a6dbff";
+  #         magenta = "#ffcaff";
+  #         cyan = "#8cf8f7";
+  #         white = "#eef1f8";
+  #       };
+  #       bright = {
+  #         black = "#4f5258";
+  #         red = "#ffc0b9";
+  #         green = "#b3f6c0";
+  #         yellow = "#fce094";
+  #         blue = "#a6dbff";
+  #         magenta = "#ffcaff";
+  #         cyan = "#8cf8f7";
+  #         white = "#eef1f8";
+  #       };
+  #     };
+  #   };
+  # };
 
   # File Manager
   programs.yazi = {
@@ -289,6 +324,20 @@ in
         run = "hx \"$@\"";
         block = true;
         for = "unix";
+      }
+    ];
+    # PDF は同じウィンドウ内の tdf で開く
+    settings.opener.pdf = [
+      {
+        run = "tdf \"$1\"";
+        block = true;
+        for = "unix";
+      }
+    ];
+    settings.open.prepend_rules = [
+      {
+        mime = "application/pdf";
+        use = "pdf";
       }
     ];
   };
@@ -389,34 +438,37 @@ in
     noDisplay = true;
     exec = "false";
   };
-  xdg.desktopEntries."discord-ptb" = lib.mkIf isLaptop {
-    name = "Discord";
-    exec = "DiscordPTB";
-    icon = "discord-ptb";
-    terminal = false;
-    categories = [
-      "Network"
-      "InstantMessaging"
-    ];
-  };
 
-  # 標準の Helix.desktop は Terminal=true で Alacritty から起動できないため隠す
+  # 標準の Helix.desktop は Terminal=true で直接起動できないため隠す
   xdg.desktopEntries."Helix" = {
     name = "Helix";
     noDisplay = true;
     exec = "false";
   };
 
-  # Helix を Alacritty 内で開く (ファイル関連付け用)
-  xdg.desktopEntries."helix-alacritty" = {
+  # Helix を Ghostty 内で開く (ファイル関連付け用)
+  xdg.desktopEntries."helix-ghostty" = {
     name = "Helix";
     genericName = "Text Editor";
-    exec = "alacritty -e hx %F";
+    exec = "ghostty -e hx %F";
     icon = "helix";
     terminal = false;
     categories = [
       "Utility"
       "TextEditor"
+    ];
+  };
+
+  # tdf を Ghostty 内で開く (PDF の関連付け用)
+  xdg.desktopEntries."tdf-ghostty" = {
+    name = "tdf";
+    genericName = "PDF Viewer";
+    exec = "ghostty -e tdf %f";
+    terminal = false;
+    mimeType = [ "application/pdf" ];
+    categories = [
+      "Office"
+      "Viewer"
     ];
   };
 
@@ -549,19 +601,6 @@ in
   #    };
   #  };
   #};
-
-  # icon theme
-  gtk = {
-    enable = true;
-    theme = {
-      name = "Yaru-prussiangreen";
-      package = pkgs.yaru-theme;
-    };
-    iconTheme = {
-      name = "Yaru-prussiangreen";
-      package = pkgs.yaru-theme;
-    };
-  };
 
   # XDG user directories (Desktop, Documents, Downloads, ...)
   xdg.userDirs = {

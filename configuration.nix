@@ -266,13 +266,12 @@
     numbat
     dust
     dysk
+    bottom
     caligula
     meli
 
     gnome-font-viewer
     loupe
-    papers
-    resources
     foliate
     keepassxc
     (chromium.override {
@@ -299,7 +298,7 @@
     "x-scheme-handler/https" = "firefox.desktop";
     "x-scheme-handler/about" = "firefox.desktop";
     "x-scheme-handler/unknown" = "firefox.desktop";
-    "application/pdf" = "org.gnome.Papers.desktop";
+    "application/pdf" = "tdf-ghostty.desktop";
     "image/png" = "org.gnome.Loupe.desktop";
     "image/jpeg" = "org.gnome.Loupe.desktop";
     "image/jpg" = "org.gnome.Loupe.desktop";
@@ -307,33 +306,33 @@
     "image/bmp" = "org.gnome.Loupe.desktop";
     "image/tiff" = "org.gnome.Loupe.desktop";
     "image/webp" = "org.gnome.Loupe.desktop";
-    "text/plain" = "helix-alacritty.desktop";
-    "text/x-python" = "helix-alacritty.desktop";
-    "text/x-csrc" = "helix-alacritty.desktop";
-    "text/x-chdr" = "helix-alacritty.desktop";
-    "text/x-c++src" = "helix-alacritty.desktop";
-    "text/x-java" = "helix-alacritty.desktop";
-    "text/x-rust" = "helix-alacritty.desktop";
-    "text/x-shellscript" = "helix-alacritty.desktop";
-    "text/x-script.python" = "helix-alacritty.desktop";
-    "text/javascript" = "helix-alacritty.desktop";
-    "text/typescript" = "helix-alacritty.desktop";
-    "text/x-lua" = "helix-alacritty.desktop";
-    "text/x-makefile" = "helix-alacritty.desktop";
-    "text/markdown" = "helix-alacritty.desktop";
-    "text/x-markdown" = "helix-alacritty.desktop";
-    "text/css" = "helix-alacritty.desktop";
-    "text/xml" = "helix-alacritty.desktop";
-    "text/yaml" = "helix-alacritty.desktop";
-    "text/x-yaml" = "helix-alacritty.desktop";
-    "text/x-toml" = "helix-alacritty.desktop";
-    "application/json" = "helix-alacritty.desktop";
-    "application/x-yaml" = "helix-alacritty.desktop";
-    "application/xml" = "helix-alacritty.desktop";
-    "application/javascript" = "helix-alacritty.desktop";
-    "application/x-sh" = "helix-alacritty.desktop";
-    "application/x-shellscript" = "helix-alacritty.desktop";
-    "application/toml" = "helix-alacritty.desktop";
+    "text/plain" = "helix-ghostty.desktop";
+    "text/x-python" = "helix-ghostty.desktop";
+    "text/x-csrc" = "helix-ghostty.desktop";
+    "text/x-chdr" = "helix-ghostty.desktop";
+    "text/x-c++src" = "helix-ghostty.desktop";
+    "text/x-java" = "helix-ghostty.desktop";
+    "text/x-rust" = "helix-ghostty.desktop";
+    "text/x-shellscript" = "helix-ghostty.desktop";
+    "text/x-script.python" = "helix-ghostty.desktop";
+    "text/javascript" = "helix-ghostty.desktop";
+    "text/typescript" = "helix-ghostty.desktop";
+    "text/x-lua" = "helix-ghostty.desktop";
+    "text/x-makefile" = "helix-ghostty.desktop";
+    "text/markdown" = "helix-ghostty.desktop";
+    "text/x-markdown" = "helix-ghostty.desktop";
+    "text/css" = "helix-ghostty.desktop";
+    "text/xml" = "helix-ghostty.desktop";
+    "text/yaml" = "helix-ghostty.desktop";
+    "text/x-yaml" = "helix-ghostty.desktop";
+    "text/x-toml" = "helix-ghostty.desktop";
+    "application/json" = "helix-ghostty.desktop";
+    "application/x-yaml" = "helix-ghostty.desktop";
+    "application/xml" = "helix-ghostty.desktop";
+    "application/javascript" = "helix-ghostty.desktop";
+    "application/x-sh" = "helix-ghostty.desktop";
+    "application/x-shellscript" = "helix-ghostty.desktop";
+    "application/toml" = "helix-ghostty.desktop";
   };
 
   # Make the bash script work
@@ -370,17 +369,17 @@
       };
       # google-fonts の Noto Color Emoji は COLRv1 形式で Alacritty が描画できないため除外
       # (noto-fonts-color-emoji の CBDT 版を使う)
-      localConf = ''
-        <?xml version="1.0"?>
-        <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
-        <fontconfig>
-          <selectfont>
-            <rejectfont>
-              <glob>*-google-fonts-*/NotoColorEmoji*.ttf</glob>
-            </rejectfont>
-          </selectfont>
-        </fontconfig>
-      '';
+      # localConf = ''
+      #   <?xml version="1.0"?>
+      #   <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+      #   <fontconfig>
+      #     <selectfont>
+      #       <rejectfont>
+      #         <glob>*-google-fonts-*/NotoColorEmoji*.ttf</glob>
+      #       </rejectfont>
+      #     </selectfont>
+      #   </fontconfig>
+      # '';
     };
   };
 
