@@ -271,8 +271,6 @@
     meli
 
     gnome-font-viewer
-    loupe
-    foliate
     keepassxc
     (chromium.override {
       commandLineArgs = [
@@ -299,13 +297,13 @@
     "x-scheme-handler/about" = "firefox.desktop";
     "x-scheme-handler/unknown" = "firefox.desktop";
     "application/pdf" = "tdf-ghostty.desktop";
-    "image/png" = "org.gnome.Loupe.desktop";
-    "image/jpeg" = "org.gnome.Loupe.desktop";
-    "image/jpg" = "org.gnome.Loupe.desktop";
-    "image/gif" = "org.gnome.Loupe.desktop";
-    "image/bmp" = "org.gnome.Loupe.desktop";
-    "image/tiff" = "org.gnome.Loupe.desktop";
-    "image/webp" = "org.gnome.Loupe.desktop";
+    "image/png" = "viu-ghostty.desktop";
+    "image/jpeg" = "viu-ghostty.desktop";
+    "image/jpg" = "viu-ghostty.desktop";
+    "image/gif" = "viu-ghostty.desktop";
+    "image/bmp" = "viu-ghostty.desktop";
+    "image/tiff" = "viu-ghostty.desktop";
+    "image/webp" = "viu-ghostty.desktop";
     "text/plain" = "helix-ghostty.desktop";
     "text/x-python" = "helix-ghostty.desktop";
     "text/x-csrc" = "helix-ghostty.desktop";

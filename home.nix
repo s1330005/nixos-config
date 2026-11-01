@@ -12,6 +12,28 @@ let
   # differs per host (see hosts/<hostname>/default.nix).
   fcitxLayout = if osConfig.networking.hostName == "desktop" then "jp" else "us";
   isLaptop = osConfig.networking.hostName == "laptop";
+
+  # zellij の IDE レイアウト用: サイドバーの yazi から、同じタブの editor ペイン (Helix) でファイルを開く
+  yaziOpenInHelix = pkgs.writeShellScript "yazi-open-in-helix" ''
+    zellij=${lib.getExe config.programs.zellij.package}
+    pane=$("$zellij" action list-panes -j -t | ${lib.getExe pkgs.jq} -r --argjson me "$ZELLIJ_PANE_ID" '
+      map(select(.is_plugin | not)) as $t
+      | ($t[] | select(.id == $me) | .tab_id) as $tab
+      | first($t[] | select(.tab_id == $tab and .title == "editor" and (.exited | not)) | "terminal_\(.id)")')
+    if [ -z "$pane" ]; then
+      # editor ペインが無ければ右に作る
+      exec "$zellij" action new-pane --direction right --name editor -- hx "$@"
+    fi
+    "$zellij" action write -p "$pane" 27 # Esc でノーマルモードに戻す
+    for f in "$@"; do
+      "$zellij" action write-chars -p "$pane" ":open \"''${f//\"/\\\"}\""
+      "$zellij" action write -p "$pane" 13
+    done
+    "$zellij" action focus-pane-id "$pane"
+  '';
+  yaziSidebar = pkgs.writeShellScript "yazi-sidebar" ''
+    YAZI_CONFIG_HOME=${config.xdg.configHome}/yazi-sidebar exec yazi "$@"
+  '';
 in
 
 {
@@ -108,6 +130,12 @@ in
     fd
     simplex-chat-desktop
     tdf
+    viu
+    basalt
+    (writeShellScriptBin "ide" ''
+      [ -n "$1" ] && cd "$1"
+      exec zellij --layout ide
+    '')
     inputs.codex-cli-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
   ]
@@ -210,40 +238,6 @@ in
     };
   };
 
-  # WezTerm (Ghostty と同じ見た目)
-  programs.wezterm = {
-    enable = true;
-    extraConfig = ''
-      return {
-        font = wezterm.font_with_fallback({
-          { family = "JetBrainsMonoNL Nerd Font Mono", weight = "Regular" },
-          "IPAexGothic",
-          "Noto Sans CJK JP",
-        }),
-        font_size = 12.0,
-        font_rules = {
-          { intensity = "Bold", font = wezterm.font("JetBrainsMonoNL Nerd Font Mono", { weight = "Regular" }) },
-          { italic = true, font = wezterm.font("JetBrainsMonoNL Nerd Font Mono", { weight = "Regular", italic = false }) },
-        },
-        window_padding = { left = 8, right = 8, top = 8, bottom = 8 },
-        window_decorations = "NONE",
-        hide_tab_bar_if_only_one_tab = true,
-        -- Ghostty "Nvim Dark" theme
-        colors = {
-          background = "#14161b",
-          foreground = "#e0e2ea",
-          cursor_bg = "#9b9ea4",
-          cursor_border = "#9b9ea4",
-          cursor_fg = "#e0e2ea",
-          selection_bg = "#4f5258",
-          selection_fg = "#e0e2ea",
-          ansi = { "#07080d", "#ffc0b9", "#b3f6c0", "#fce094", "#a6dbff", "#ffcaff", "#8cf8f7", "#eef1f8" },
-          brights = { "#4f5258", "#ffc0b9", "#b3f6c0", "#fce094", "#a6dbff", "#ffcaff", "#8cf8f7", "#eef1f8" },
-        },
-      }
-    '';
-  };
-
   # Alacritty (Ghostty と同じ見た目)
   # programs.alacritty = {
   #   enable = true;
@@ -326,18 +320,48 @@ in
         for = "unix";
       }
     ];
-    # PDF は同じウィンドウ内の tdf で開く
-    settings.opener.pdf = [
-      {
-        run = "tdf \"$1\"";
-        block = true;
-        for = "unix";
-      }
+  };
+
+  # Terminal Multiplexer
+  programs.zellij = {
+    enable = true;
+  };
+
+  # VSCode 風レイアウト (`ide` で起動): 左 yazi / 右上 Helix / 右下 ターミナル
+  xdg.configFile."zellij/layouts/ide.kdl".text = ''
+    layout {
+        default_tab_template {
+            pane size=1 borderless=true {
+                plugin location="zellij:tab-bar"
+            }
+            children
+            pane size=1 borderless=true {
+                plugin location="zellij:status-bar"
+            }
+        }
+        tab name="IDE" focus=true {
+            pane split_direction="vertical" {
+                pane name="files" size="20%" command="${yaziSidebar}"
+                pane split_direction="horizontal" size="80%" {
+                    pane name="editor" size="75%" command="hx" focus=true
+                    pane name="terminal" size="25%"
+                }
+            }
+        }
+    }
+  '';
+
+  # サイドバー用の yazi 設定 (ファイル一覧の1列だけ表示し、テキストは editor ペインで開く)
+  xdg.configFile."yazi-sidebar/yazi.toml".source = (pkgs.formats.toml { }).generate "yazi-sidebar.toml" {
+    mgr.ratio = [
+      0
+      1
+      0
     ];
-    settings.open.prepend_rules = [
+    opener.edit = [
       {
-        mime = "application/pdf";
-        use = "pdf";
+        run = "${yaziOpenInHelix} \"$@\"";
+        for = "unix";
       }
     ];
   };
@@ -468,6 +492,31 @@ in
     mimeType = [ "application/pdf" ];
     categories = [
       "Office"
+      "Viewer"
+    ];
+  };
+
+  # viu を Ghostty 内で開く (画像の関連付け用)
+  # viu は表示後すぐ終了するので、キー入力までウィンドウを残す
+  xdg.desktopEntries."viu-ghostty" = {
+    name = "viu";
+    genericName = "Image Viewer";
+    exec = "ghostty -e ${pkgs.writeShellScript "viu-view" ''
+      ${lib.getExe pkgs.viu} -- "$@"
+      read -rsn1
+    ''} %f";
+    terminal = false;
+    mimeType = [
+      "image/png"
+      "image/jpeg"
+      "image/jpg"
+      "image/gif"
+      "image/bmp"
+      "image/tiff"
+      "image/webp"
+    ];
+    categories = [
+      "Graphics"
       "Viewer"
     ];
   };
