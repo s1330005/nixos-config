@@ -270,7 +270,6 @@
     meli
 
     gnome-calculator
-    gnome-disk-utility
     gnome-font-viewer
     loupe
     papers
