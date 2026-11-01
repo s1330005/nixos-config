@@ -463,6 +463,13 @@ in
     exec = "false";
   };
 
+  # rmpc.desktop は Terminal=true で直接起動できないため隠す
+  xdg.desktopEntries."rmpc" = {
+    name = "rmpc";
+    noDisplay = true;
+    exec = "false";
+  };
+
   # 標準の Helix.desktop は Terminal=true で直接起動できないため隠す
   xdg.desktopEntries."Helix" = {
     name = "Helix";
@@ -487,6 +494,7 @@ in
   xdg.desktopEntries."tdf-ghostty" = {
     name = "tdf";
     genericName = "PDF Viewer";
+    noDisplay = true;
     exec = "ghostty -e tdf %f";
     terminal = false;
     mimeType = [ "application/pdf" ];
@@ -496,11 +504,25 @@ in
     ];
   };
 
+  # basalt (Obsidian ノートの TUI) を Ghostty 内で起動 (ランチャー用)
+  xdg.desktopEntries."basalt-ghostty" = {
+    name = "Basalt";
+    genericName = "Note Taking";
+    exec = "ghostty -e basalt";
+    icon = "${pkgs.basalt.src}/assets/basalt.png";
+    terminal = false;
+    categories = [
+      "Office"
+      "Utility"
+    ];
+  };
+
   # viu を Ghostty 内で開く (画像の関連付け用)
   # viu は表示後すぐ終了するので、キー入力までウィンドウを残す
   xdg.desktopEntries."viu-ghostty" = {
     name = "viu";
     genericName = "Image Viewer";
+    noDisplay = true;
     exec = "ghostty -e ${pkgs.writeShellScript "viu-view" ''
       ${lib.getExe pkgs.viu} -- "$@"
       read -rsn1
