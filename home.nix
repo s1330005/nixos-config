@@ -11,7 +11,6 @@ let
   # fcitx5's own keyboard layout should match the physical keyboard, which
   # differs per host (see hosts/<hostname>/default.nix).
   fcitxLayout = if osConfig.networking.hostName == "desktop" then "jp" else "us";
-  isLaptop = osConfig.networking.hostName == "laptop";
 
   # zellij の IDE レイアウト用: サイドバーの yazi から、同じタブの editor ペイン (Helix) でファイルを開く
   yaziOpenInHelix = pkgs.writeShellScript "yazi-open-in-helix" ''
@@ -158,9 +157,6 @@ in
     '')
     inputs.codex-cli-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.claude-code-nix.packages.${pkgs.stdenv.hostPlatform.system}.default
-  ]
-  ++ lib.optionals isLaptop [
-    slack
   ];
 
   # Cursor theme
