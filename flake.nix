@@ -17,6 +17,10 @@
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
     flake-utils.url = "github:numtide/flake-utils";
+    browser-previews = {
+      url = "github:nix-community/browser-previews"; # Google Chrome (公式リリースを自動追従)
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     silentSDDM = {
       url = "github:uiriansan/SilentSDDM";
       inputs.nixpkgs.follows = "nixpkgs";

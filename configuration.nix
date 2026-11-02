@@ -238,6 +238,7 @@
   services.gvfs.enable = true; # for nautilus
   environment.systemPackages = with pkgs; [
     inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
+    inputs.browser-previews.packages.${pkgs.stdenv.hostPlatform.system}.google-chrome
     eww
     just
     wayland
