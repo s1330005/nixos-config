@@ -11,6 +11,7 @@
   programs.steam.enable = true;
   environment.systemPackages = with pkgs; [
     libreoffice-fresh
+    thunderbird
   ];
 
   # US keyboard (NixOS default, no xkb/keyMap override needed)

@@ -168,6 +168,21 @@ in
     x11.enable = true;
   };
 
+  # GTK theme (Nautilus 等)
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Yaru-blue-dark";
+      package = pkgs.yaru-theme;
+    };
+    iconTheme = {
+      name = "Yaru-blue";
+      package = pkgs.yaru-theme;
+    };
+    # Nautilus は GTK4 (libadwaita) なので gtk4 側にも明示的に指定する
+    gtk4.theme = config.gtk.theme;
+  };
+
   # Launcher
   programs.walker = {
     enable = true;
@@ -552,6 +567,20 @@ in
     ];
   };
 
+  # meli (メール TUI) を Ghostty 内で起動 (ランチャー用)
+  # meli パッケージは .desktop もアイコンも同梱しないため Yaru の mail-app を使う
+  xdg.desktopEntries."meli-ghostty" = {
+    name = "meli";
+    genericName = "Mail Client";
+    exec = "ghostty -e meli";
+    icon = "mail-app";
+    terminal = false;
+    categories = [
+      "Network"
+      "Email"
+    ];
+  };
+
   # viu を Ghostty 内で開く (画像の関連付け用)
   # viu は表示後すぐ終了するので、キー入力までウィンドウを残す
   xdg.desktopEntries."viu-ghostty" = {
@@ -762,6 +791,13 @@ in
       [GroupOrder]
       0=Default
     '';
+  };
+
+  # KDE color scheme (BreezeDark). fcitx5's "plasma" theme is generated from
+  # these colors by fcitx5-plasma-theme-generator.
+  xdg.configFile."kdeglobals" = {
+    force = true;
+    source = "${pkgs.kdePackages.breeze}/share/color-schemes/BreezeDark.colors";
   };
 
   xdg.configFile."fcitx5/conf/classicui.conf" = {

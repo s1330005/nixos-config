@@ -245,6 +245,7 @@
     xwayland-satellite
     adwaita-icon-theme
     yaru-theme
+    nautilus
     pulseaudio
     brightnessctl
     wireguard-tools
