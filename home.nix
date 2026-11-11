@@ -139,6 +139,7 @@ in
     hdparm
     typst
     python3
+    uv
     inkscape
     # electron 43.8.3 renders a black window (webFrame TypeError in renderer_init)
     (obsidian.override { electron = electron_42; })
@@ -718,6 +719,15 @@ in
   # VSCode
   programs.vscode = {
     enable = true;
+    # vscode 1.144 moved bundled ripgrep; nixpkgs' postPatch still rm's the old path.
+    # Remove this override once nixpkgs is fixed.
+    package = pkgs.vscode.overrideAttrs (old: {
+      postPatch =
+        builtins.replaceStrings
+          [ "resources/app/node_modules/@vscode/ripgrep/bin/rg" ]
+          [ "resources/app/node_modules.asar.unpacked/@vscode/ripgrep-universal/bin/linux-x64/rg" ]
+          old.postPatch;
+    });
     profiles.default.userSettings = {
       "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'IPAexGothic', 'Noto Sans CJK JP', monospace";
       "editor.fontLigatures" = true;

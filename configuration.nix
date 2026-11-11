@@ -233,6 +233,8 @@
 
   # Apps
   nixpkgs.config.allowUnfree = true;
+  # obsidian を electron_42 で固定しているため (home.nix 参照)
+  nixpkgs.config.permittedInsecurePackages = [ "electron-42.11.18" ];
   documentation.nixos.enable = false; # hide NixOS documentation
   programs.xwayland.enable = true;
   services.gvfs.enable = true; # for nautilus
