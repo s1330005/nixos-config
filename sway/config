@@ -26,10 +26,9 @@ focus_follows_mouse yes
 seat seat0 xcursor_theme Yaru 24
 
 # ── Look ───────────────────────────────────────────────────
-# Sway's default look (title bars, borders, colors), plus niri's gaps.
-# 6px between windows and at the edges. eww's :reserve is X11-only, so on Wayland
-# the bar reserves nothing: add 30px on top for the bar (like niri's struts { top 30; })
-gaps inner 6
+# Sway's default look (title bars, borders, colors, no gaps).
+# eww's :reserve is X11-only, so on Wayland the bar reserves nothing:
+# add 30px on top for the bar (like niri's struts { top 30; })
 gaps top 30
 
 # ── Key bindings (same keys as niri/config.kdl) ────────────

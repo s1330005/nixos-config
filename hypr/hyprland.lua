@@ -29,9 +29,9 @@ hl.env("HYPRCURSOR_SIZE", "24")
 -- ── Look and feel ──────────────────────────────────────────
 hl.config({
     general = {
-        -- match niri: gaps 6 + struts { top 30; }
-        gaps_in = 3, -- applied per side, so 6px between windows
-        gaps_out = { top = 36, right = 6, bottom = 6, left = 6 },
+        -- stock gaps (in 5, out 20), plus 30px on top for the eww bar
+        gaps_in = 5,
+        gaps_out = { top = 50, right = 20, bottom = 20, left = 20 },
         border_size = 2,
         col = {
             active_border = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 },
