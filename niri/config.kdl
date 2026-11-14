@@ -1,7 +1,7 @@
 // ── Startup ────────────────────────────────────────────────
 spawn-at-startup "awww-daemon"
 spawn-at-startup "awww-daemon" "-n" "overlay"
-spawn-at-startup "/home/sam/.local/bin/eww-wallpaper" "restore"
+spawn-at-startup "/home/sam/.local/bin/eww-wallpaper"
 spawn-at-startup "/home/sam/.local/bin/eww-start"
 
 // ── General ────────────────────────────────────────────────
@@ -35,13 +35,17 @@ output "HDMI-A-1" {
 
 // ── Layout ─────────────────────────────────────────────────
 layout {
-    gaps 8
+    gaps 6
     background-color "transparent"
-    focus-ring { off; }
+    focus-ring {
+        width 1
+        active-color "#00000096"
+        inactive-color "#00000096"
+    }
     border {
         width 2
-        active-color "#4C9AFFEE"
-        inactive-color "transparent"
+        active-color "#A7C080CC"
+        inactive-color "#475258CC"
         urgent-color "#9b000096"
     }
     struts { top 30; }
