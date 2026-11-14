@@ -32,8 +32,6 @@ hl.config({
         -- match niri: gaps 6 + struts { top 30; }
         gaps_in = 3, -- applied per side, so 6px between windows
         gaps_out = { top = 36, right = 6, bottom = 6, left = 6 },
-        -- macOS-style double outline: thin light inner line (border)
-        -- + thin dark outer line (sharp 1px shadow, see decoration.shadow)
         border_size = 2,
         col = {
             active_border = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 },
@@ -51,10 +49,9 @@ hl.config({
         inactive_opacity = 1.0,
         shadow = {
             enabled = true,
-            sharp = true,
-            range = 1,
-            color = "rgba(000000cc)",
-            color_inactive = "rgba(00000080)",
+            range = 4,
+            render_power = 3,
+            color = "rgba(1a1a1aee)",
         },
         blur = {
             enabled = true,

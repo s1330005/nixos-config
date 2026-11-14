@@ -26,20 +26,11 @@ focus_follows_mouse yes
 seat seat0 xcursor_theme Yaru 24
 
 # ── Look ───────────────────────────────────────────────────
-font pango:Noto Sans 10
-default_border pixel 2
-default_floating_border pixel 2
-hide_edge_borders none
-# 6px between windows and at the edges. On top, eww reserves 20px, so add 10px
-# to clear the 30px bar plus a 6px gap (like niri's struts { top 30; })
+# Sway's default look (title bars, borders, colors), plus niri's gaps.
+# 6px between windows and at the edges. eww's :reserve is X11-only, so on Wayland
+# the bar reserves nothing: add 30px on top for the bar (like niri's struts { top 30; })
 gaps inner 6
-gaps top 10
-
-# niri border colors           border    bg        text      indicator child_border
-client.focused                 #E8E4DC   #E8E4DC   #1E1E1E   #E8E4DC   #E8E4DCCC
-client.focused_inactive        #475258   #475258   #E8E4DC   #475258   #475258CC
-client.unfocused               #475258   #2B3135   #A0A0A0   #475258   #475258CC
-client.urgent                  #9B0000   #9B0000   #FFFFFF   #9B0000   #9B000096
+gaps top 30
 
 # ── Key bindings (same keys as niri/config.kdl) ────────────
 # Apps
