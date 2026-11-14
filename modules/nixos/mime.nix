@@ -21,6 +21,20 @@ let
     "webp"
   ];
 
+  videoTypes = map (t: "video/${t}") [
+    "mp4"
+    "x-matroska"
+    "webm"
+    "quicktime"
+    "x-msvideo"
+    "x-flv"
+    "mpeg"
+    "ogg"
+    "3gpp"
+    "x-ms-wmv"
+    "mp2t"
+  ];
+
   textTypes =
     map (t: "text/${t}") [
       "plain"
@@ -61,5 +75,6 @@ in
   }
   // handle "firefox.desktop" browserTypes
   // handle "org.gnome.Loupe.desktop" imageTypes
+  // handle "org.gnome.Showtime.desktop" videoTypes
   // handle "Helix.desktop" textTypes;
 }

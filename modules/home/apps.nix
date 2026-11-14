@@ -26,5 +26,6 @@
     amberol
     loupe
     papers
+    showtime
   ];
 }
