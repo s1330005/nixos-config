@@ -21,10 +21,6 @@
       url = "github:nix-community/browser-previews"; # Google Chrome (公式リリースを自動追従)
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    silentSDDM = {
-      url = "github:uiriansan/SilentSDDM";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =

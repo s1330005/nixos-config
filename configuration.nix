@@ -7,35 +7,33 @@
 }:
 
 {
-  imports = [
-    inputs.silentSDDM.nixosModules.default
-  ];
-
   boot = {
     kernelPackages = pkgs.linuxPackages;
     loader = {
       systemd-boot.enable = true;
+      systemd-boot.configurationLimit = 3; # ブートメニューに出す世代を3つまでに
+      systemd-boot.consoleMode = "0"; # 80x25 の最小解像度モードにして文字を大きく表示
       efi.canTouchEfiVariables = true;
       timeout = 5;
     };
-    # kernelParams = [
-    #   "quiet"
-    #   "loglevel=0"
-    #   "rd.udev.log_level=3"
-    #   "udev.log_priority=3"
-    #   "vt.global_cursor_default=0"
-    #   "rd.systemd.show_status=false"
-    #   "systemd.show_status=false"
-    #   "systemd.log_level=emerg"
-    # ];
-    # consoleLogLevel = 0;
-    # initrd.verbose = false;
+    kernelParams = [
+      "quiet"
+      "loglevel=0"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
+      "vt.global_cursor_default=0"
+      "rd.systemd.show_status=false"
+      "systemd.show_status=false"
+      "systemd.log_level=emerg"
+    ];
+    consoleLogLevel = 0;
+    initrd.verbose = false;
   };
 
-  # systemd.settings.Manager = {
-  #   ShowStatus = "no";
-  #   StatusUnitFormat = "none";
-  # };
+  systemd.settings.Manager = {
+    ShowStatus = "no";
+    StatusUnitFormat = "none";
+  };
 
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
@@ -157,48 +155,91 @@
   };
 
   # US keyboard (NixOS default, no xkb/keyMap override needed)
+  # tuigreet は TTY 上で描画するので、JetBrains Mono を PSF に変換してコンソールフォントにする
   console = {
-    font = "Lat2-Terminus16";
+    earlySetup = true;
+    font =
+      let
+        jetbrainsMonoPsf =
+          pkgs.runCommand "jetbrains-mono-psf"
+            {
+              nativeBuildInputs = [
+                pkgs.otf2bdf
+                pkgs.bdf2psf
+                pkgs.gawk
+              ];
+            }
+            ''
+              mkdir -p $out/share/consolefonts
+              # サイズは -p (pt, 96dpi) で調整
+              otf2bdf -p 16 -r 96 -c C -l '32_126 160_255 9472_9599' \
+                ${pkgs.jetbrains-mono}/share/fonts/truetype/JetBrainsMono-Regular.ttf > raw.bdf || true
+              # bdf2psf は AVERAGE_WIDTH = 幅*10 を要求するので DWIDTH から補正
+              w=$(awk '/^DWIDTH/{print $2; exit}' raw.bdf)
+              sed "s/^AVERAGE_WIDTH .*/AVERAGE_WIDTH $((w*10))/" raw.bdf > f.bdf
+              B=${pkgs.bdf2psf}/share/bdf2psf
+              bdf2psf --fb f.bdf $B/standard.equivalents $B/ascii.set+$B/linux.set+$B/useful.set 512 \
+                $out/share/consolefonts/JetBrainsMono.psf
+            '';
+      in
+      "${jetbrainsMonoPsf}/share/consolefonts/JetBrainsMono.psf";
   };
 
-  # Login manager
-  system.activationScripts.sddmAvatar = {
-    text = ''
-      mkdir -p /var/lib/AccountsService/icons
-      cp ${./wallpapers/wallpaper.jpg} /var/lib/AccountsService/icons/sam
-      chmod 644 /var/lib/AccountsService/icons/sam
-    '';
-  };
-  programs.silentSDDM = {
+  # Login manager (greetd + tuigreet)
+  services.greetd = {
     enable = true;
-    theme = "default";
-    settings = {
-      General.scale = 0.5;
-      "LockScreen.Clock" = {
-        position = "top-center";
-        format = "h:mm";
-        font-family = "Roboto Medium";
-        font-size = 80;
-        font-weight = 800;
+    settings.default_session =
+      let
+        tuigreetCmd = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-session --asterisks --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
+        # 下部のキーガイド (F2 command / F3 session / F12 power など) を非表示
+        tuigreetEnv = pkgs.lib.concatMapStringsSep " " (k: "TUIGREET_STATUS_SHOW_${k}=false") [
+          "RESET"
+          "COMMAND"
+          "SESSION"
+          "POWER"
+          "BACKGROUND"
+          "SESSION_STATUS"
+          "CAPS_LOCK"
+        ];
+      in
+      {
+        command = "${pkgs.coreutils}/bin/env ${tuigreetEnv} ${tuigreetCmd}";
+        user = "greeter";
       };
-      "LockScreen.Date" = {
-        format = "yyyy/M/d ddd";
-        font-family = "Roboto Medium";
-        font-size = 18;
-        margin-top = 3;
-      };
-    };
   };
-
-  services.displayManager.sddm.settings.Theme = {
-    CursorTheme = "Yaru";
-    CursorSize = 24;
+  # tuigreet の画面にカーネル/systemd のログが混ざらないようにする
+  systemd.services.greetd.serviceConfig = {
+    Type = "idle";
+    StandardInput = "tty";
+    StandardOutput = "tty";
+    StandardError = "journal";
+    TTYReset = true;
+    TTYVHangup = true;
+    TTYVTDisallocate = true;
   };
 
   # Window manager
   nixpkgs.overlays = [ inputs.niri.overlays.niri ];
   programs.niri.enable = true;
-  programs.niri.package = pkgs.niri-unstable;
+  # niri-session の `systemctl --user import-environment` (引数なし) が
+  # "Calling import-environment without a list of variable names is deprecated" を出すので、
+  # 変数名を明示して渡すように niri-session だけ差し替える (niri 本体は再ビルドしない)
+  programs.niri.package =
+    let
+      niri = pkgs.niri-unstable;
+    in
+    pkgs.symlinkJoin {
+      name = "${niri.name}-patched-session";
+      inherit (niri) version meta passthru cargoBuildNoDefaultFeatures cargoBuildFeatures;
+      paths = [ niri ];
+      postBuild = ''
+        rm $out/bin/niri-session
+        substitute ${niri}/bin/niri-session $out/bin/niri-session \
+          --replace-fail 'systemctl --user import-environment' \
+            "systemctl --user import-environment \$(${pkgs.gawk}/bin/awk 'BEGIN{for(v in ENVIRON) if (v ~ /^[A-Za-z_][A-Za-z0-9_]*\$/ && v != \"AWKPATH\" && v != \"AWKLIBPATH\") print v}')"
+        chmod +x $out/bin/niri-session
+      '';
+    };
 
   # Screen locker
   programs.hyprlock.enable = true;
@@ -411,6 +452,23 @@
     "nix-command"
     "flakes"
   ];
+
+  # システム世代を最新3つだけ残し、それ以外は削除して GC する（毎日）
+  systemd.services.nix-keep-3-generations = {
+    description = "Keep only the latest 3 NixOS generations and collect garbage";
+    serviceConfig.Type = "oneshot";
+    script = ''
+      ${config.nix.package}/bin/nix-env --profile /nix/var/nix/profiles/system --delete-generations +3
+      ${config.nix.package}/bin/nix-collect-garbage
+    '';
+  };
+  systemd.timers.nix-keep-3-generations = {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "daily";
+      Persistent = true;
+    };
+  };
 
   system.stateVersion = "26.05";
 }
