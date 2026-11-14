@@ -20,9 +20,16 @@
       '';
     };
 
+  # Pick "Hyprland (uwsm-managed)" in tuigreet: UWSM brings up graphical-session.target
+  # like niri-session does, so walker/dunst/polkit start in both sessions
+  programs.hyprland = {
+    enable = true;
+    withUWSM = true;
+  };
+
   systemd.user.services.polkit-kde-agent = {
     description = "PolicyKit authentication agent";
-    wantedBy = [ "niri.service" ];
+    wantedBy = [ "graphical-session.target" ];
     after = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
     serviceConfig = {

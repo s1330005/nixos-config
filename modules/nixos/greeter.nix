@@ -8,7 +8,7 @@
   services.greetd = {
     enable = true;
     settings.default_session = {
-      command = "${pkgs.tuigreet}/bin/tuigreet --time --asterisks --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
+      command = "${pkgs.tuigreet}/bin/tuigreet --time --asterisks --remember-session --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
       user = "greeter";
     };
   };

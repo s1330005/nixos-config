@@ -5,6 +5,7 @@
     ./terminal.nix
     ./editors.nix
     ./desktop.nix
+    ./hyprland.nix
     ./notifications.nix
     ./eww.nix
     ./fcitx5.nix

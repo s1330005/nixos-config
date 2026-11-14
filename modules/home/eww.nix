@@ -8,6 +8,7 @@ let
     "start"
     "net-icon"
     "workspaces"
+    "focus-ws"
     "volume-text"
     "vpn"
     "battery"
