@@ -6,6 +6,7 @@
     ./editors.nix
     ./desktop.nix
     ./hyprland.nix
+    ./sway.nix
     ./notifications.nix
     ./eww.nix
     ./fcitx5.nix

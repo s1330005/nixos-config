@@ -1,0 +1,195 @@
+# Sway config with niri's keybinds (see niri/config.kdl and hypr/hyprland.lua).
+# man 5 sway
+
+set $mod Mod4
+set $bin /home/sam/.local/bin
+set $term ghostty
+set $menu walker
+
+# /etc/sway/config.d/nixos.conf is left out on purpose: it starts sway-session.target,
+# which clashes with UWSM. `uwsm finalize` at the bottom exports the environment instead.
+
+# ── Outputs ────────────────────────────────────────────────
+output eDP-1 mode 2560x1600@60.001Hz scale 1.25 position 0 0
+output HDMI-A-1 mode 3840x2160@120.000Hz scale 1.333333
+
+# ── Input ──────────────────────────────────────────────────
+input type:keyboard {
+    xkb_layout us
+    xkb_numlock enabled
+}
+input type:touchpad {
+    tap enabled
+    natural_scroll enabled
+}
+focus_follows_mouse yes
+seat seat0 xcursor_theme Yaru 24
+
+# ── Look ───────────────────────────────────────────────────
+font pango:Noto Sans 10
+default_border pixel 2
+default_floating_border pixel 2
+hide_edge_borders none
+# 6px between windows and at the edges. On top, eww reserves 20px, so add 10px
+# to clear the 30px bar plus a 6px gap (like niri's struts { top 30; })
+gaps inner 6
+gaps top 10
+
+# niri border colors           border    bg        text      indicator child_border
+client.focused                 #E8E4DC   #E8E4DC   #1E1E1E   #E8E4DC   #E8E4DCCC
+client.focused_inactive        #475258   #475258   #E8E4DC   #475258   #475258CC
+client.unfocused               #475258   #2B3135   #A0A0A0   #475258   #475258CC
+client.urgent                  #9B0000   #9B0000   #FFFFFF   #9B0000   #9B000096
+
+# ── Key bindings (same keys as niri/config.kdl) ────────────
+# Apps
+bindsym $mod+Return exec $term
+bindsym $mod+Space exec $menu
+bindsym $mod+b exec firefox
+bindsym $mod+n exec nautilus
+bindsym $mod+m exec thunderbird
+bindsym --locked $mod+Alt+s exec pkill orca || exec orca
+
+# Media & brightness
+bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ -l 1.0
+bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym --locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioStop exec playerctl stop
+bindsym --locked XF86AudioPrev exec playerctl previous
+bindsym --locked XF86AudioNext exec playerctl next
+bindsym --locked XF86MonBrightnessUp exec brightnessctl --class=backlight set +10%
+bindsym --locked XF86MonBrightnessDown exec brightnessctl --class=backlight set 10%-
+
+# Window
+bindsym $mod+c kill
+
+# Focus / Move / Monitor, for arrows and hjkl
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+
+bindsym $mod+Ctrl+Left move left
+bindsym $mod+Ctrl+Down move down
+bindsym $mod+Ctrl+Up move up
+bindsym $mod+Ctrl+Right move right
+bindsym $mod+Ctrl+h move left
+bindsym $mod+Ctrl+j move down
+bindsym $mod+Ctrl+k move up
+bindsym $mod+Ctrl+l move right
+
+bindsym $mod+Shift+Left focus output left
+bindsym $mod+Shift+Down focus output down
+bindsym $mod+Shift+Up focus output up
+bindsym $mod+Shift+Right focus output right
+bindsym $mod+Shift+h focus output left
+bindsym $mod+Shift+j focus output down
+bindsym $mod+Shift+k focus output up
+bindsym $mod+Shift+l focus output right
+
+bindsym $mod+Shift+Ctrl+Left move container to output left, focus output left
+bindsym $mod+Shift+Ctrl+Down move container to output down, focus output down
+bindsym $mod+Shift+Ctrl+Up move container to output up, focus output up
+bindsym $mod+Shift+Ctrl+Right move container to output right, focus output right
+bindsym $mod+Shift+Ctrl+h move container to output left, focus output left
+bindsym $mod+Shift+Ctrl+j move container to output down, focus output down
+bindsym $mod+Shift+Ctrl+k move container to output up, focus output up
+bindsym $mod+Shift+Ctrl+l move container to output right, focus output right
+
+# Workspaces (next/previous among existing ones on this monitor)
+bindsym $mod+Page_Down workspace next_on_output
+bindsym $mod+Page_Up workspace prev_on_output
+bindsym $mod+u workspace next_on_output
+bindsym $mod+i workspace prev_on_output
+bindsym $mod+Ctrl+Page_Down move container to workspace next_on_output, workspace next_on_output
+bindsym $mod+Ctrl+Page_Up move container to workspace prev_on_output, workspace prev_on_output
+bindsym $mod+Ctrl+u move container to workspace next_on_output, workspace next_on_output
+bindsym $mod+Ctrl+i move container to workspace prev_on_output, workspace prev_on_output
+
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+Ctrl+1 move container to workspace number 1
+bindsym $mod+Ctrl+2 move container to workspace number 2
+bindsym $mod+Ctrl+3 move container to workspace number 3
+bindsym $mod+Ctrl+4 move container to workspace number 4
+bindsym $mod+Ctrl+5 move container to workspace number 5
+bindsym $mod+Ctrl+6 move container to workspace number 6
+bindsym $mod+Ctrl+7 move container to workspace number 7
+bindsym $mod+Ctrl+8 move container to workspace number 8
+bindsym $mod+Ctrl+9 move container to workspace number 9
+
+# Mouse wheel (button4/5 = scroll up/down, button6/7 = scroll left/right)
+bindsym --whole-window $mod+button5 workspace next_on_output
+bindsym --whole-window $mod+button4 workspace prev_on_output
+bindsym --whole-window $mod+Ctrl+button5 move container to workspace next_on_output, workspace next_on_output
+bindsym --whole-window $mod+Ctrl+button4 move container to workspace prev_on_output, workspace prev_on_output
+bindsym --whole-window $mod+button7 focus right
+bindsym --whole-window $mod+button6 focus left
+bindsym --whole-window $mod+Ctrl+button7 move right
+bindsym --whole-window $mod+Ctrl+button6 move left
+bindsym --whole-window $mod+Shift+button5 focus right
+bindsym --whole-window $mod+Shift+button4 focus left
+bindsym --whole-window $mod+Ctrl+Shift+button5 move right
+bindsym --whole-window $mod+Ctrl+Shift+button4 move left
+
+# Drag with Mod+LMB, resize with Mod+RMB
+floating_modifier $mod normal
+
+# 3-finger horizontal swipe switches workspaces
+bindgesture swipe:3:left workspace next_on_output
+bindgesture swipe:3:right workspace prev_on_output
+
+# Tabs (niri: tabbed column)
+bindsym $mod+w layout toggle tabbed split
+
+# Sizing (sway has no maximize, so Mod+F is fullscreen too)
+bindsym $mod+r layout toggle split
+bindsym $mod+f fullscreen toggle
+bindsym $mod+Shift+f fullscreen toggle
+bindsym $mod+minus resize shrink width 100px
+bindsym $mod+equal resize grow width 100px
+bindsym $mod+Shift+minus resize shrink height 100px
+bindsym $mod+Shift+equal resize grow height 100px
+
+# Floating
+bindsym $mod+v floating toggle
+bindsym $mod+Shift+v focus mode_toggle
+
+# Screenshots: saved to ~/Pictures/Screenshots and copied to the clipboard
+bindsym Print exec $bin/sway-screenshot region
+bindsym Ctrl+Print exec $bin/sway-screenshot output
+bindsym Alt+Print exec $bin/sway-screenshot window
+
+# Session (press Mod+Shift+P again to turn the monitors back on)
+bindsym $mod+Shift+p output * power toggle
+bindsym $mod+Shift+e exec uwsm stop
+bindsym Ctrl+Alt+Delete exec uwsm stop
+
+# niri binds with no Sway equivalent:
+#   Mod+O overview, Mod+Shift+/ hotkey overlay, Mod+Home/End,
+#   Mod+Shift+U/I/PgUp/PgDn (reorder workspaces), Mod+[ ] , . Q Ctrl+C (column ops),
+#   Mod+Ctrl+F, Mod+Shift+R / Mod+Ctrl+R, Mod+Escape
+
+# ── Window rules ───────────────────────────────────────────
+for_window [app_id="firefox" title="^Picture-in-Picture$"] floating enable, sticky enable
+# (Hyprland's no_screen_share for KeePassXC/Secrets has no Sway equivalent)
+
+# ── Autostart ──────────────────────────────────────────────
+exec awww-daemon
+exec $bin/eww-wallpaper
+exec $bin/eww-start
+# Tell UWSM the compositor is up so graphical-session.target starts
+exec exec uwsm finalize SWAYSOCK I3SOCK XCURSOR_SIZE XCURSOR_THEME

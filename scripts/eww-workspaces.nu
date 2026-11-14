@@ -57,11 +57,60 @@ def hypr_state [] {
   {workspaces: $workspaces, apps: $apps}
 }
 
+# Sway windows under a node in tree order (left to right), floating ones last
+def sway_windows [node: record] {
+  let tiled = ($node.nodes? | default [])
+  let floating = ($node.floating_nodes? | default [])
+  if ($tiled | is-empty) and ($floating | is-empty) {
+    if $node.type in [con floating_con] { [$node] } else { [] }
+  } else {
+    $tiled ++ $floating | reduce -f [] {|child, acc| $acc ++ (sway_windows $child) }
+  }
+}
+
+def sway_state [] {
+  # workspaces on the focused output, `visible` marks the one shown there
+  let all = (^swaymsg -t get_workspaces | from json)
+  let current = ($all | where focused | first)
+  let workspaces = (
+    $all
+    | where output == $current.output and num >= 0
+    | sort-by num
+    | each {|ws| {id: $ws.num, idx: $ws.num, is_active: $ws.visible} }
+  )
+
+  let ws_node = (
+    ^swaymsg -t get_tree
+    | from json
+    | get nodes
+    | reduce -f [] {|out, acc| $acc ++ ($out.nodes? | default []) }
+    | where name == $current.name
+    | first
+  )
+  let apps = (
+    sway_windows $ws_node
+    | each {|w|
+        let id = ($w.app_id? | default ($w.window_properties?.class? | default ""))
+        {name: (app_name $id), focused: $w.focused}
+      }
+  )
+
+  {workspaces: $workspaces, apps: $apps}
+}
+
 def emit [state: closure] {
   print (do $state | to json --raw)
 }
 
-if ($env.HYPRLAND_INSTANCE_SIGNATURE? | is-not-empty) {
+if ($env.SWAYSOCK? | is-not-empty) {
+  emit { sway_state }
+  # one compact line per event
+  ^swaymsg -t subscribe -m '["workspace","window"]'
+  | ^jq -c --unbuffered .
+  | lines
+  | each { emit { sway_state } }
+  | ignore
+} else if ($env.HYPRLAND_INSTANCE_SIGNATURE? | is-not-empty) {
   emit { hypr_state }
   let sock = $"($env.XDG_RUNTIME_DIR)/hypr/($env.HYPRLAND_INSTANCE_SIGNATURE)/.socket2.sock"
   ^socat -U - $"UNIX-CONNECT:($sock)"

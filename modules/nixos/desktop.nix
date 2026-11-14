@@ -27,6 +27,19 @@
     withUWSM = true;
   };
 
+  # Pick "Sway (UWSM)" in tuigreet, same reasoning as Hyprland above
+  programs.sway = {
+    enable = true;
+    wrapperFeatures.gtk = true;
+    # default pulls in foot/wmenu/swaylock/...; we use ghostty/walker instead
+    extraPackages = [ ];
+  };
+  programs.uwsm.waylandCompositors.sway = {
+    prettyName = "Sway";
+    comment = "Sway compositor managed by UWSM";
+    binPath = "/run/current-system/sw/bin/sway";
+  };
+
   systemd.user.services.polkit-kde-agent = {
     description = "PolicyKit authentication agent";
     wantedBy = [ "graphical-session.target" ];
