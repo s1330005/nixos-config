@@ -29,10 +29,14 @@
       niri,
       ...
     }:
+    let
+      username = "sam";
+      specialArgs = { inherit inputs username; };
+    in
     {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = { inherit inputs; };
+        inherit specialArgs;
         modules = [
           ./configuration.nix
           ./hardware-configuration.nix
@@ -42,8 +46,8 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              extraSpecialArgs = { inherit inputs; };
-              users.sam = import ./home.nix;
+              extraSpecialArgs = specialArgs;
+              users.${username} = import ./home.nix;
             };
           }
         ];
