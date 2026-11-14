@@ -7,7 +7,7 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    elephant.url = "github:abenz1267/elephant"; # for walker
+    elephant.url = "github:abenz1267/elephant";
     walker = {
       url = "github:abenz1267/walker";
       inputs.elephant.follows = "elephant";
@@ -16,32 +16,22 @@
     niri.url = "github:sodiboo/niri-flake";
     codex-cli-nix.url = "github:sadjow/codex-cli-nix";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
-    flake-utils.url = "github:numtide/flake-utils";
     browser-previews = {
-      url = "github:nix-community/browser-previews"; # Google Chrome (公式リリースを自動追従)
+      url = "github:nix-community/browser-previews";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs =
     inputs@{
-      self,
       nixpkgs,
       home-manager,
       niri,
-      codex-cli-nix,
-      claude-code-nix,
-      flake-utils,
       ...
     }:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
     {
-      # Single NixOS system configuration for this machine.
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        inherit system;
+        system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
           ./configuration.nix
@@ -58,31 +48,5 @@
           }
         ];
       };
-    }
-
-    //
-
-      flake-utils.lib.eachDefaultSystem (
-        system:
-        let
-          pkgs = import nixpkgs { inherit system; };
-        in
-        {
-          devShells.default = pkgs.mkShell {
-            nativeBuildInputs = with pkgs; [
-              nodejs_latest
-              playwright-driver.browsers
-            ];
-
-            buildInputs = [
-              codex-cli-nix.packages.${system}.default
-            ];
-
-            shellHook = ''
-              export PLAYWRIGHT_BROWSERS_PATH=${pkgs.playwright-driver.browsers}
-              export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
-            '';
-          };
-        }
-      );
+    };
 }

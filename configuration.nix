@@ -10,12 +10,12 @@
   boot = {
     loader = {
       systemd-boot.enable = true;
-      systemd-boot.configurationLimit = 3; # ブートメニューに出す世代を3つまでに
-      systemd-boot.consoleMode = "0"; # 80x25 の最小解像度モードにして文字を大きく表示
+      systemd-boot.configurationLimit = 3;
+      systemd-boot.consoleMode = "0"; # larger text
       efi.canTouchEfiVariables = true;
     };
-    kernelParams = [ "vt.global_cursor_default=0" ]; # hide the console cursor
-    consoleLogLevel = 0; # hide kernel/udev/systemd logs on the console (adds loglevel=0)
+    kernelParams = [ "vt.global_cursor_default=0" ];
+    consoleLogLevel = 0;
   };
 
   networking.networkmanager.enable = true;
@@ -59,20 +59,16 @@
   };
   };
 
-  # Open port
   networking.firewall.allowedTCPPorts = [
     5173
     4321
     3000
   ];
 
-  # Graphics
   hardware.graphics.enable = true;
 
-  # AMD iGPU + Nvidia GTX 1650 (prime offload)
   hardware.amdgpu.opencl.enable = true;
-  # amdgpu を initrd で読み込み、fbcon の切り替えをコンソールフォント設定より前に済ませる
-  # (後から読み込まれるとフォントがカーネル既定に戻る)
+  # Load amdgpu early so the console font isn't reset
   hardware.amdgpu.initrd.enable = true;
   services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
   hardware.nvidia = {
@@ -105,14 +101,13 @@
     ];
   };
   environment.variables = {
-    GTK_IM_MODULE = lib.mkForce ""; # hide the message displayed at startup
+    GTK_IM_MODULE = lib.mkForce ""; # silence startup warning
     EDITOR = "hx";
     VISUAL = "hx";
     VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json";
   };
 
-  # US keyboard (NixOS default, no xkb/keyMap override needed)
-  # tuigreet は TTY 上で描画するので、JetBrains Mono を PSF に変換してコンソールフォントにする
+  # JetBrains Mono as console font (for tuigreet)
   console = {
     earlySetup = true;
     font =
@@ -128,10 +123,9 @@
             }
             ''
               mkdir -p $out/share/consolefonts
-              # サイズは -p (pt, 96dpi) で調整
               otf2bdf -p 16 -r 96 -c C -l '32_126 160_255 9472_9599' \
                 ${pkgs.jetbrains-mono}/share/fonts/truetype/JetBrainsMono-Regular.ttf > raw.bdf || true
-              # bdf2psf は AVERAGE_WIDTH = 幅*10 を要求するので DWIDTH から補正
+              # bdf2psf requires AVERAGE_WIDTH = width*10
               w=$(awk '/^DWIDTH/{print $2; exit}' raw.bdf)
               sed "s/^AVERAGE_WIDTH .*/AVERAGE_WIDTH $((w*10))/" raw.bdf > f.bdf
               B=${pkgs.bdf2psf}/share/bdf2psf
@@ -142,14 +136,13 @@
       "${jetbrainsMonoPsf}/share/consolefonts/JetBrainsMono.psf";
   };
 
-  # Login manager (greetd + tuigreet)
   services.greetd = {
     enable = true;
     settings.default_session =
       let
         tuigreetCmd = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-session --asterisks --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
-        # 下部のキーガイド (F2 command / F3 session / F12 power など) を非表示
-        tuigreetEnv = pkgs.lib.concatMapStringsSep " " (k: "TUIGREET_STATUS_SHOW_${k}=false") [
+        # Hide the key hints
+        tuigreetEnv = lib.concatMapStringsSep " " (k: "TUIGREET_STATUS_SHOW_${k}=false") [
           "RESET"
           "COMMAND"
           "SESSION"
@@ -164,7 +157,7 @@
         user = "greeter";
       };
   };
-  # tuigreet の画面にカーネル/systemd のログが混ざらないようにする
+  # Keep kernel/systemd logs off the greeter
   systemd.services.greetd.serviceConfig = {
     StandardInput = "tty";
     StandardOutput = "tty";
@@ -174,12 +167,9 @@
     TTYVTDisallocate = true;
   };
 
-  # Window manager
   nixpkgs.overlays = [ inputs.niri.overlays.niri ];
   programs.niri.enable = true;
-  # niri-session の `systemctl --user import-environment` (引数なし) が
-  # "Calling import-environment without a list of variable names is deprecated" を出すので、
-  # 変数名を明示して渡すように niri-session だけ差し替える (niri 本体は再ビルドしない)
+  # Pass explicit names to `import-environment` to silence its deprecation warning
   programs.niri.package =
     let
       niri = pkgs.niri-unstable;
@@ -197,10 +187,8 @@
       '';
     };
 
-  # Screen locker
   programs.hyprlock.enable = true;
 
-  # Audio
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -209,7 +197,6 @@
     jack.enable = true;
   };
 
-  # User
   users.users.sam = {
     isNormalUser = true;
     extraGroups = [
@@ -220,7 +207,6 @@
     shell = pkgs.nushell;
   };
 
-  # Docker
   virtualisation.docker = {
     enable = true;
     daemon.settings = {
@@ -232,21 +218,19 @@
     };
   };
 
-  # Syncthing
   services.syncthing = {
     enable = true;
-    openDefaultPorts = true; # Open ports in the firewall for Syncthing. (NOTE: this will not open syncthing gui port)
+    openDefaultPorts = true;
     user = "sam";
     group = "users";
     dataDir = "/home/sam/.local/share/syncthing";
     configDir = "/home/sam/.local/share/syncthing/config";   
   };
 
-  # Apps
   nixpkgs.config.allowUnfree = true;
-  # obsidian を electron_42 で固定しているため (home.nix 参照)
+  # obsidian is pinned to electron_42
   nixpkgs.config.permittedInsecurePackages = [ "electron-42.11.18" ];
-  documentation.nixos.enable = false; # hide NixOS documentation
+  documentation.nixos.enable = false;
   services.gvfs.enable = true; # for nautilus
   environment.systemPackages = with pkgs; [
     inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
@@ -260,12 +244,9 @@
     pulseaudio
     brightnessctl
 
-    (lib.hiPrio pkgs.uutils-coreutils-noprefix) # use uutils instead of coreutils
-    helix
-    wget
+    (lib.hiPrio uutils-coreutils-noprefix)
     curl
     xh
-    git
     ripgrep
     fastfetch
     lm_sensors
@@ -297,52 +278,62 @@
     binfmt = true;
   };
 
-  # Set dafault Apps
   xdg.mime.enable = true;
-  xdg.mime.defaultApplications = {
-    "text/html" = "firefox.desktop";
-    "x-scheme-handler/http" = "firefox.desktop";
-    "x-scheme-handler/https" = "firefox.desktop";
-    "x-scheme-handler/about" = "firefox.desktop";
-    "x-scheme-handler/unknown" = "firefox.desktop";
-    "application/pdf" = "tdf-ghostty.desktop";
-    "image/png" = "viu-ghostty.desktop";
-    "image/jpeg" = "viu-ghostty.desktop";
-    "image/jpg" = "viu-ghostty.desktop";
-    "image/gif" = "viu-ghostty.desktop";
-    "image/bmp" = "viu-ghostty.desktop";
-    "image/tiff" = "viu-ghostty.desktop";
-    "image/webp" = "viu-ghostty.desktop";
-    "text/plain" = "helix-ghostty.desktop";
-    "text/x-python" = "helix-ghostty.desktop";
-    "text/x-csrc" = "helix-ghostty.desktop";
-    "text/x-chdr" = "helix-ghostty.desktop";
-    "text/x-c++src" = "helix-ghostty.desktop";
-    "text/x-java" = "helix-ghostty.desktop";
-    "text/x-rust" = "helix-ghostty.desktop";
-    "text/x-shellscript" = "helix-ghostty.desktop";
-    "text/x-script.python" = "helix-ghostty.desktop";
-    "text/javascript" = "helix-ghostty.desktop";
-    "text/typescript" = "helix-ghostty.desktop";
-    "text/x-lua" = "helix-ghostty.desktop";
-    "text/x-makefile" = "helix-ghostty.desktop";
-    "text/markdown" = "helix-ghostty.desktop";
-    "text/x-markdown" = "helix-ghostty.desktop";
-    "text/css" = "helix-ghostty.desktop";
-    "text/xml" = "helix-ghostty.desktop";
-    "text/yaml" = "helix-ghostty.desktop";
-    "text/x-yaml" = "helix-ghostty.desktop";
-    "text/x-toml" = "helix-ghostty.desktop";
-    "application/json" = "helix-ghostty.desktop";
-    "application/x-yaml" = "helix-ghostty.desktop";
-    "application/xml" = "helix-ghostty.desktop";
-    "application/javascript" = "helix-ghostty.desktop";
-    "application/x-sh" = "helix-ghostty.desktop";
-    "application/x-shellscript" = "helix-ghostty.desktop";
-    "application/toml" = "helix-ghostty.desktop";
-  };
+  xdg.mime.defaultApplications =
+    {
+      "application/pdf" = "tdf-ghostty.desktop";
+    }
+    // lib.genAttrs [
+      "text/html"
+      "x-scheme-handler/http"
+      "x-scheme-handler/https"
+      "x-scheme-handler/about"
+      "x-scheme-handler/unknown"
+    ] (_: "firefox.desktop")
+    // lib.genAttrs (map (t: "image/${t}") [
+      "png"
+      "jpeg"
+      "jpg"
+      "gif"
+      "bmp"
+      "tiff"
+      "webp"
+    ]) (_: "viu-ghostty.desktop")
+    // lib.genAttrs (
+      map (t: "text/${t}") [
+        "plain"
+        "x-python"
+        "x-csrc"
+        "x-chdr"
+        "x-c++src"
+        "x-java"
+        "x-rust"
+        "x-shellscript"
+        "x-script.python"
+        "javascript"
+        "typescript"
+        "x-lua"
+        "x-makefile"
+        "markdown"
+        "x-markdown"
+        "css"
+        "xml"
+        "yaml"
+        "x-yaml"
+        "x-toml"
+      ]
+      ++ map (t: "application/${t}") [
+        "json"
+        "x-yaml"
+        "xml"
+        "javascript"
+        "x-sh"
+        "x-shellscript"
+        "toml"
+      ]
+    ) (_: "helix-ghostty.desktop");
 
-  # Make the bash script work
+  # For #!/bin/bash scripts
   systemd.tmpfiles.rules = [
     "L+ /bin/bash - - - - ${pkgs.bash}/bin/bash"
   ];
@@ -375,13 +366,12 @@
     };
   };
 
-  # Enable flakes
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
   ];
 
-  # システム世代を最新3つだけ残し、それ以外は削除して GC する（毎日）
+  # Daily: keep the latest 3 generations and GC
   systemd.services.nix-keep-3-generations = {
     description = "Keep only the latest 3 NixOS generations and collect garbage";
     serviceConfig.Type = "oneshot";
