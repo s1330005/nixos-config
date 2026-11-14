@@ -28,9 +28,6 @@
     ];
     consoleLogLevel = 0;
     initrd.verbose = false;
-    # Disable the AMD SP5100 TCO hardware watchdog to suppress
-    # "watchdog0: watchdog did not stop!" on reboot/shutdown.
-    blacklistedKernelModules = [ "sp5100_tco" ];
   };
 
   systemd.settings.Manager = {
