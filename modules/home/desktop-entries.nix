@@ -12,7 +12,6 @@ let
     "org.fcitx.fcitx5-qt5-gui-wrapper"
     "fcitx5-wayland-launcher"
     "kbd-layout-viewer5"
-    "Helix"
   ];
 
   # Keep the window open until a key is pressed
@@ -29,18 +28,6 @@ in
       exec = "false";
     })
     // {
-      "helix-ghostty" = {
-        name = "Helix";
-        genericName = "Text Editor";
-        exec = "ghostty -e hx %F";
-        icon = "helix";
-        terminal = false;
-        categories = [
-          "Utility"
-          "TextEditor"
-        ];
-      };
-
       "tdf-ghostty" = {
         name = "tdf";
         genericName = "PDF Viewer";
