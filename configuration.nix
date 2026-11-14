@@ -16,22 +16,8 @@
       efi.canTouchEfiVariables = true;
       timeout = 5;
     };
-    kernelParams = [
-      "quiet"
-      "loglevel=0"
-      "rd.udev.log_level=3"
-      "udev.log_priority=3"
-      "vt.global_cursor_default=0"
-      "rd.systemd.show_status=true"
-      "systemd.show_status=true"
-      "systemd.log_level=emerg"
-    ];
-    consoleLogLevel = 0;
-    initrd.verbose = false;
-  };
-
-  systemd.settings.Manager = {
-    ShowStatus = "yes";
+    kernelParams = [ "vt.global_cursor_default=0" ]; # hide the console cursor
+    consoleLogLevel = 0; # hide kernel/udev/systemd logs on the console (adds loglevel=0)
   };
 
   networking.hostName = "nixos";
