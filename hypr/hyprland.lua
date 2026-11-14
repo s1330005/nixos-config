@@ -1,10 +1,20 @@
--- Hyprland config, kept close to niri/config.kdl (scrolling layout + same keybinds).
--- Binds that niri has but Hyprland lacks are listed at the bottom.
+-- Hyprland config: stock example config (dwindle layout) with niri's keybinds.
+-- https://wiki.hypr.land/Configuring/Start/
 
-local mod = "SUPER"
+local mainMod = "SUPER"
 local bin = "/home/sam/.local/bin"
 
--- ── Startup ────────────────────────────────────────────────
+local terminal = "ghostty"
+local fileManager = "nautilus"
+local menu = "walker"
+local browser = "firefox"
+
+-- ── Monitors ───────────────────────────────────────────────
+hl.monitor({ output = "eDP-1", mode = "2560x1600@60.001", position = "0x0", scale = 1.25 })
+hl.monitor({ output = "HDMI-A-1", mode = "3840x2160@120.000", position = "auto", scale = 1.333333 })
+hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
+
+-- ── Autostart ──────────────────────────────────────────────
 hl.on("hyprland.start", function()
     hl.exec_cmd("awww-daemon")
     hl.exec_cmd(bin .. "/eww-wallpaper")
@@ -14,92 +24,117 @@ end)
 -- ── Environment ────────────────────────────────────────────
 hl.env("XCURSOR_THEME", "Yaru")
 hl.env("XCURSOR_SIZE", "24")
+hl.env("HYPRCURSOR_SIZE", "24")
 
--- ── Outputs ────────────────────────────────────────────────
-hl.monitor({ output = "eDP-1", mode = "2560x1600@60.001", position = "0x0", scale = 1.25 })
--- niri uses 1.3; Hyprland needs a scale that divides the resolution evenly
-hl.monitor({ output = "HDMI-A-1", mode = "3840x2160@120.000", position = "auto", scale = 1.333333 })
-hl.monitor({ output = "", mode = "preferred", position = "auto", scale = "auto" })
-
--- ── General / Layout ───────────────────────────────────────
+-- ── Look and feel ──────────────────────────────────────────
 hl.config({
     general = {
-        layout = "scrolling",
-        gaps_in = 3, -- applied per side, so 6px between windows like niri
-        -- top 30px leaves room for the eww bar (niri: struts { top 30; })
+        -- match niri: gaps 6 + struts { top 30; }
+        gaps_in = 3, -- applied per side, so 6px between windows
         gaps_out = { top = 36, right = 6, bottom = 6, left = 6 },
+        -- macOS-style double outline: thin light inner line (border)
+        -- + thin dark outer line (sharp 1px shadow, see decoration.shadow)
         border_size = 2,
         col = {
-            active_border = "rgba(e8e4dccc)",
-            inactive_border = "rgba(475258cc)",
+            active_border = { colors = { "rgba(33ccffee)", "rgba(00ff99ee)" }, angle = 45 },
+            inactive_border = "rgba(595959aa)",
         },
-    },
-
-    scrolling = {
-        column_width = 0.5,
-        explicit_column_widths = "0.333, 0.5, 0.667",
-        fullscreen_on_one_column = false,
-        focus_fit_method = 1,
-        wrap_focus = false,
-        wrap_swapcol = false,
+        resize_on_border = false,
+        allow_tearing = false,
+        layout = "dwindle",
     },
 
     decoration = {
         rounding = 10,
-        shadow = { enabled = false },
-        blur = { enabled = false },
+        rounding_power = 2,
+        active_opacity = 1.0,
+        inactive_opacity = 1.0,
+        shadow = {
+            enabled = true,
+            sharp = true,
+            range = 1,
+            color = "rgba(000000cc)",
+            color_inactive = "rgba(00000080)",
+        },
+        blur = {
+            enabled = true,
+            size = 3,
+            passes = 1,
+            vibrancy = 0.1696,
+        },
+    },
+
+    animations = {
+        enabled = true,
+    },
+
+    dwindle = {
+        preserve_split = true,
+    },
+
+    master = {
+        new_status = "master",
+    },
+
+    misc = {
+        force_default_wallpaper = 0,
+        disable_hyprland_logo = true,
+        disable_splash_rendering = true,
     },
 
     input = {
+        kb_layout = "us",
         numlock_by_default = true,
         follow_mouse = 1,
+        sensitivity = 0,
         touchpad = {
             tap_to_click = true,
             natural_scroll = true,
         },
     },
-
-    misc = {
-        disable_hyprland_logo = true,
-        disable_splash_rendering = true,
-        force_default_wallpaper = 0,
-    },
 })
 
--- ── Window rules ───────────────────────────────────────────
-hl.window_rule({
-    name = "firefox-pip",
-    match = { class = "firefox$", title = "^Picture-in-Picture$" },
-    float = true,
-})
+-- Default curves and animations
+hl.curve("easeOutQuint", { type = "bezier", points = { { 0.23, 1 }, { 0.32, 1 } } })
+hl.curve("easeInOutCubic", { type = "bezier", points = { { 0.65, 0.05 }, { 0.36, 1 } } })
+hl.curve("linear", { type = "bezier", points = { { 0, 0 }, { 1, 1 } } })
+hl.curve("almostLinear", { type = "bezier", points = { { 0.5, 0.5 }, { 0.75, 1 } } })
+hl.curve("quick", { type = "bezier", points = { { 0.15, 0 }, { 0.1, 1 } } })
+hl.curve("easy", { type = "spring", mass = 1, stiffness = 71.2633, dampening = 15.8273644 })
 
--- Hide password managers from screen capture
-hl.window_rule({
-    name = "hide-keepassxc",
-    match = { class = "^org\\.keepassxc\\.KeePassXC$" },
-    no_screen_share = true,
-})
-hl.window_rule({
-    name = "hide-secrets",
-    match = { class = "^org\\.gnome\\.World\\.Secrets$" },
-    no_screen_share = true,
-})
+hl.animation({ leaf = "global", enabled = true, speed = 10, bezier = "default" })
+hl.animation({ leaf = "border", enabled = true, speed = 5.39, bezier = "easeOutQuint" })
+hl.animation({ leaf = "windows", enabled = true, speed = 4.79, spring = "easy" })
+hl.animation({ leaf = "windowsIn", enabled = true, speed = 4.1, spring = "easy", style = "popin 87%" })
+hl.animation({ leaf = "windowsOut", enabled = true, speed = 1.49, bezier = "linear", style = "popin 87%" })
+hl.animation({ leaf = "fadeIn", enabled = true, speed = 1.73, bezier = "almostLinear" })
+hl.animation({ leaf = "fadeOut", enabled = true, speed = 1.46, bezier = "almostLinear" })
+hl.animation({ leaf = "fade", enabled = true, speed = 3.03, bezier = "quick" })
+hl.animation({ leaf = "layers", enabled = true, speed = 3.81, bezier = "easeOutQuint" })
+hl.animation({ leaf = "layersIn", enabled = true, speed = 4, bezier = "easeOutQuint", style = "fade" })
+hl.animation({ leaf = "layersOut", enabled = true, speed = 1.5, bezier = "linear", style = "fade" })
+hl.animation({ leaf = "fadeLayersIn", enabled = true, speed = 1.79, bezier = "almostLinear" })
+hl.animation({ leaf = "fadeLayersOut", enabled = true, speed = 1.39, bezier = "almostLinear" })
+hl.animation({ leaf = "workspaces", enabled = true, speed = 1.94, bezier = "almostLinear", style = "fade" })
+hl.animation({ leaf = "workspacesIn", enabled = true, speed = 1.21, bezier = "almostLinear", style = "fade" })
+hl.animation({ leaf = "workspacesOut", enabled = true, speed = 1.94, bezier = "almostLinear", style = "fade" })
+hl.animation({ leaf = "zoomFactor", enabled = true, speed = 7, bezier = "quick" })
 
--- ── Key bindings ───────────────────────────────────────────
-local function bind(keys, dsp, opts)
-    hl.bind(keys, dsp, opts)
-end
-local function m(keys) return mod .. " + " .. keys end
+-- 3-finger horizontal swipe switches workspaces
+hl.gesture({ fingers = 3, direction = "horizontal", action = "workspace" })
+
+-- ── Key bindings (same keys as niri/config.kdl) ────────────
 local exec = hl.dsp.exec_cmd
-local layout = hl.dsp.layout
+local function m(keys) return mainMod .. " + " .. keys end
+local function bind(keys, dsp, opts) hl.bind(keys, dsp, opts) end
 local locked = { locked = true }
 local repeating = { locked = true, repeating = true }
 
 -- Apps
-bind(m("Return"), exec("ghostty"))
-bind(m("Space"), exec("walker"))
-bind(m("B"), exec("firefox"))
-bind(m("N"), exec("nautilus"))
+bind(m("Return"), exec(terminal))
+bind(m("Space"), exec(menu))
+bind(m("B"), exec(browser))
+bind(m("N"), exec(fileManager))
 bind(m("M"), exec("thunderbird"))
 bind(m("ALT + S"), exec("pkill orca || exec orca"), locked)
 
@@ -128,17 +163,9 @@ local dirs = {
 for _, d in ipairs(dirs) do
     local arrow, vim, short, long = d[1], d[2], d[3], d[4]
     for _, key in ipairs({ arrow, vim }) do
-        -- focus-column-* / focus-window-*
-        bind(m(key), layout("focus " .. short))
-        -- move-column-left/right, move-window-up/down
-        if short == "l" or short == "r" then
-            bind(m("CTRL + " .. key), layout("swapcol " .. short))
-        else
-            bind(m("CTRL + " .. key), hl.dsp.window.move({ direction = long }))
-        end
-        -- focus-monitor-*
+        bind(m(key), hl.dsp.focus({ direction = long }))
+        bind(m("CTRL + " .. key), hl.dsp.window.move({ direction = long }))
         bind(m("SHIFT + " .. key), hl.dsp.focus({ monitor = short }))
-        -- move-column-to-monitor-*
         bind(m("SHIFT + CTRL + " .. key), hl.dsp.window.move({ monitor = short }))
     end
 end
@@ -161,35 +188,28 @@ bind(m("mouse_down"), hl.dsp.focus({ workspace = "r+1" }))
 bind(m("mouse_up"), hl.dsp.focus({ workspace = "r-1" }))
 bind(m("CTRL + mouse_down"), hl.dsp.window.move({ workspace = "r+1" }))
 bind(m("CTRL + mouse_up"), hl.dsp.window.move({ workspace = "r-1" }))
-bind(m("mouse_right"), layout("focus r"))
-bind(m("mouse_left"), layout("focus l"))
-bind(m("CTRL + mouse_right"), layout("swapcol r"))
-bind(m("CTRL + mouse_left"), layout("swapcol l"))
-bind(m("SHIFT + mouse_down"), layout("focus r"))
-bind(m("SHIFT + mouse_up"), layout("focus l"))
-bind(m("CTRL + SHIFT + mouse_down"), layout("swapcol r"))
-bind(m("CTRL + SHIFT + mouse_up"), layout("swapcol l"))
+bind(m("mouse_right"), hl.dsp.focus({ direction = "right" }))
+bind(m("mouse_left"), hl.dsp.focus({ direction = "left" }))
+bind(m("CTRL + mouse_right"), hl.dsp.window.move({ direction = "right" }))
+bind(m("CTRL + mouse_left"), hl.dsp.window.move({ direction = "left" }))
+bind(m("SHIFT + mouse_down"), hl.dsp.focus({ direction = "right" }))
+bind(m("SHIFT + mouse_up"), hl.dsp.focus({ direction = "left" }))
+bind(m("CTRL + SHIFT + mouse_down"), hl.dsp.window.move({ direction = "right" }))
+bind(m("CTRL + SHIFT + mouse_up"), hl.dsp.window.move({ direction = "left" }))
 
 -- Drag / resize with the mouse (niri: Mod+LMB / Mod+RMB)
 bind(m("mouse:272"), hl.dsp.window.drag(), { mouse = true })
 bind(m("mouse:273"), hl.dsp.window.resize(), { mouse = true })
 
--- Columns
-bind(m("bracketleft"), layout("consume_or_expel prev"))
-bind(m("bracketright"), layout("consume_or_expel next"))
-bind(m("comma"), layout("consume"))
-bind(m("period"), layout("expel"))
-bind(m("W"), hl.dsp.group.toggle()) -- closest thing to a tabbed column
-bind(m("Q"), layout("center"))
-bind(m("CTRL + C"), layout("fit visible"))
+-- Tabs (niri: tabbed column)
+bind(m("W"), hl.dsp.group.toggle())
 
 -- Sizing
-bind(m("R"), layout("colresize +conf"))
+bind(m("R"), hl.dsp.layout("togglesplit")) -- dwindle: closest to niri's width presets
 bind(m("F"), hl.dsp.window.fullscreen({ mode = "maximized" }))
 bind(m("SHIFT + F"), hl.dsp.window.fullscreen({ mode = "fullscreen" }))
-bind(m("CTRL + F"), layout("fit active"))
-bind(m("minus"), layout("colresize -0.1"))
-bind(m("equal"), layout("colresize +0.1"))
+bind(m("minus"), hl.dsp.window.resize({ x = -100, y = 0, relative = true }))
+bind(m("equal"), hl.dsp.window.resize({ x = 100, y = 0, relative = true }))
 bind(m("SHIFT + minus"), hl.dsp.window.resize({ x = 0, y = -100, relative = true }))
 bind(m("SHIFT + equal"), hl.dsp.window.resize({ x = 0, y = 100, relative = true }))
 
@@ -204,7 +224,7 @@ bind(m("SHIFT + V"), function()
     end
 end)
 
--- Screenshots (niri saves to ~/Pictures/Screenshots and copies to the clipboard)
+-- Screenshots: saved to ~/Pictures/Screenshots and copied to the clipboard
 local shot = 'f=~/Pictures/Screenshots/"Screenshot from $(date "+%Y-%m-%d %H-%M-%S").png"; '
     .. 'mkdir -p ~/Pictures/Screenshots && '
 bind("Print", exec(shot .. 'grim -g "$(slurp)" "$f" && wl-copy < "$f"'))
@@ -217,7 +237,47 @@ bind(m("SHIFT + P"), hl.dsp.dpms({ action = "disable" }))
 bind(m("SHIFT + E"), exec("uwsm stop"))
 bind("CTRL + ALT + Delete", exec("uwsm stop"))
 
--- Not available in Hyprland (niri only):
+-- niri binds with no Hyprland/dwindle equivalent:
 --   Mod+O overview, Mod+Shift+/ hotkey overlay, Mod+Home/End,
---   Mod+Shift+U/I/PgUp/PgDn (reorder workspaces), Mod+Shift+R / Mod+Ctrl+R (window height presets),
---   Mod+Escape (shortcut inhibit toggle)
+--   Mod+Shift+U/I/PgUp/PgDn (reorder workspaces), Mod+[ ] , . Q Ctrl+C (column ops),
+--   Mod+Ctrl+F, Mod+Shift+R / Mod+Ctrl+R, Mod+Escape
+
+-- ── Window rules ───────────────────────────────────────────
+hl.window_rule({
+    -- Ignore maximize requests from all apps
+    name = "suppress-maximize-events",
+    match = { class = ".*" },
+    suppress_event = "maximize",
+})
+
+hl.window_rule({
+    -- Fix some dragging issues with XWayland
+    name = "fix-xwayland-drags",
+    match = {
+        class = "^$",
+        title = "^$",
+        xwayland = true,
+        float = true,
+        fullscreen = false,
+        pin = false,
+    },
+    no_focus = true,
+})
+
+hl.window_rule({
+    name = "firefox-pip",
+    match = { class = "firefox$", title = "^Picture-in-Picture$" },
+    float = true,
+})
+
+-- Hide password managers from screen capture
+hl.window_rule({
+    name = "hide-keepassxc",
+    match = { class = "^org\\.keepassxc\\.KeePassXC$" },
+    no_screen_share = true,
+})
+hl.window_rule({
+    name = "hide-secrets",
+    match = { class = "^org\\.gnome\\.World\\.Secrets$" },
+    no_screen_share = true,
+})
