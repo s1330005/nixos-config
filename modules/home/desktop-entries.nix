@@ -12,7 +12,6 @@ let
     "org.fcitx.fcitx5-qt5-gui-wrapper"
     "fcitx5-wayland-launcher"
     "kbd-layout-viewer5"
-    "rmpc"
     "Helix"
   ];
 
