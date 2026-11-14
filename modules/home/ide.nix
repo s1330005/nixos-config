@@ -1,5 +1,5 @@
 # Terminal IDE: zellij `ide` layout with a yazi sidebar that opens files in Helix.
-# Also configures the standalone yazi, which shares its theme and open rules.
+# Also configures the standalone yazi, which shares its theme.
 {
   config,
   lib,
@@ -70,15 +70,6 @@ let
       };
     };
   };
-
-  # Open PDFs in-terminal with tdf
-  yaziOpenRules.prepend_rules = [
-    {
-      mime = "application/pdf";
-      use = [ "view-pdf" ];
-    }
-  ];
-  yaziViewPdf = lib.getExe pkgs.tdf;
 in
 {
   programs.zellij.enable = true;
@@ -86,17 +77,9 @@ in
   programs.yazi = {
     enable = true;
     theme = yaziTheme;
-    settings.open = yaziOpenRules;
     settings.opener.edit = [
       {
         run = "hx \"$@\"";
-        block = true;
-        for = "unix";
-      }
-    ];
-    settings.opener.view-pdf = [
-      {
-        run = "${yaziViewPdf} \"$1\"";
         block = true;
         for = "unix";
       }
@@ -134,16 +117,9 @@ in
       1
       0
     ];
-    open = yaziOpenRules;
     opener.edit = [
       {
         run = "${yaziOpenInHelix} \"$@\"";
-        for = "unix";
-      }
-    ];
-    opener.view-pdf = [
-      {
-        run = "${zellij} run --floating --close-on-exit -- ${yaziViewPdf} \"$1\"";
         for = "unix";
       }
     ];

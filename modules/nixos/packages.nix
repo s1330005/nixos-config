@@ -43,7 +43,6 @@ in
     dysk
     bottom
     caligula
-    meli
     libreoffice-fresh
     thunderbird
 

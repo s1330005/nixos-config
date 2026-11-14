@@ -21,5 +21,10 @@
     };
   };
 
-  home.packages = [ pkgs.amberol ];
+  # GNOME apps; default handlers are set in modules/nixos/mime.nix
+  home.packages = with pkgs; [
+    amberol
+    loupe
+    papers
+  ];
 }

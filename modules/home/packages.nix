@@ -27,9 +27,6 @@ in
     fd
     tree
     simplex-chat-desktop
-    tdf
-    viu
-    basalt
     # Open the zellij `ide` layout (see ide.nix)
     (writeShellScriptBin "ide" ''
       [ -n "$1" ] && cd "$1"

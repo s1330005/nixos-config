@@ -161,8 +161,8 @@ binds {
     Mod+N hotkey-overlay-title="Open a File Explorer: yazi" {
         spawn "ghostty" "-e" "yazi"
     }
-    Mod+M hotkey-overlay-title="Open Mail: meli" {
-        spawn "ghostty" "-e" "meli"
+    Mod+M hotkey-overlay-title="Open Mail: thunderbird" {
+        spawn "thunderbird"
     }
     Mod+Shift+Slash {
         show-hotkey-overlay

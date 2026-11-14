@@ -57,9 +57,9 @@ in
 {
   xdg.mime.enable = true;
   xdg.mime.defaultApplications = {
-    "application/pdf" = "tdf-ghostty.desktop";
+    "application/pdf" = "org.gnome.Papers.desktop";
   }
   // handle "firefox.desktop" browserTypes
-  // handle "viu-ghostty.desktop" imageTypes
-  // handle "helix-ghostty.desktop" textTypes;
+  // handle "org.gnome.Loupe.desktop" imageTypes
+  // handle "Helix.desktop" textTypes;
 }
