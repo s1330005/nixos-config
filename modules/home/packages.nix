@@ -27,11 +27,6 @@ in
     fd
     tree
     simplex-chat-desktop
-    # Open the zellij `ide` layout (see ide.nix)
-    (writeShellScriptBin "ide" ''
-      [ -n "$1" ] && cd "$1"
-      exec zellij --layout ide
-    '')
     inputs.codex-cli-nix.packages.${system}.default
     inputs.claude-code-nix.packages.${system}.default
   ];

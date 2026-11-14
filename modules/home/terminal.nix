@@ -1,4 +1,6 @@
 {
+  programs.yazi.enable = true;
+
   programs.ghostty = {
     enable = true;
     settings = {

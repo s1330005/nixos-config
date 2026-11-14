@@ -158,8 +158,8 @@ binds {
     Mod+B hotkey-overlay-title="Open a Browser: firefox" {
         spawn "firefox"
     }
-    Mod+N hotkey-overlay-title="Open a File Explorer: yazi" {
-        spawn "ghostty" "-e" "yazi"
+    Mod+N hotkey-overlay-title="Open a File Explorer: nautilus" {
+        spawn "nautilus"
     }
     Mod+M hotkey-overlay-title="Open Mail: thunderbird" {
         spawn "thunderbird"
@@ -172,9 +172,6 @@ binds {
     }
     Mod+Space hotkey-overlay-title="Run an Application: walker" {
         spawn "walker"
-    }
-    Mod+Alt+L hotkey-overlay-title="Lock the Screen: hyprlock" {
-        spawn "hyprlock"
     }
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null {
         spawn-sh "pkill orca || exec orca"
