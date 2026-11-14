@@ -207,6 +207,8 @@ in
     enable = true;
     settings = {
       init.defaultBranch = "main";
+      user.name = "sam";
+      user.email = "sam@example.com";
     };
   };
 
@@ -600,6 +602,7 @@ in
   xdg.configFile."eww" = {
     force = true;
     source = ./eww;
+    recursive = true;
   };
 
   xdg.configFile."hypr/hyprlock.conf" = {
