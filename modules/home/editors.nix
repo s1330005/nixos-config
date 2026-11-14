@@ -51,21 +51,40 @@
     ];
   };
 
-  programs.vscode = {
+  programs.zed-editor = {
     enable = true;
-    # Workaround: vscode 1.144 moved bundled rg; drop once nixpkgs is fixed
-    package = pkgs.vscode.overrideAttrs (old: {
-      postPatch =
-        builtins.replaceStrings
-          [ "resources/app/node_modules/@vscode/ripgrep/bin/rg" ]
-          [ "resources/app/node_modules.asar.unpacked/@vscode/ripgrep-universal/bin/linux-x64/rg" ]
-          old.postPatch;
-    });
-    profiles.default.userSettings = {
-      "editor.fontFamily" = "'JetBrainsMono Nerd Font', 'IPAexGothic', 'Noto Sans CJK JP', monospace";
-      "editor.fontLigatures" = true;
-      "terminal.integrated.fontFamily" = "'JetBrainsMono Nerd Font', 'IPAexGothic', 'Noto Sans CJK JP'";
-      "window.controlsStyle" = "hidden";
+
+    userSettings = {
+      cli_default_open_behavior = "existing_window";
+      diff_view_style = "unified";
+
+      project_panel.dock = "left";
+      outline_panel.dock = "left";
+      collaboration_panel.dock = "left";
+      git_panel.dock = "left";
+
+      agent = {
+        dock = "right";
+        favorite_models = [ ];
+        model_parameters = [ ];
+      };
+
+      telemetry = {
+        diagnostics = false;
+        metrics = false;
+      };
+
+      session.trust_all_worktrees = true;
+
+      icon_theme = "Zed (Default)";
+      ui_font_size = 16;
+      buffer_font_size = 14.5;
+      buffer_font_family = "JetBrainsMono Nerd Font";
+      buffer_line_height = "standard";
+
+      soft_wrap = "none";
+
+      title_bar.show_sign_in = false;
     };
   };
 }

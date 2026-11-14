@@ -17,7 +17,6 @@ in
 
   environment.systemPackages = with pkgs; [
     inputs.awww.packages.${system}.awww
-    inputs.browser-previews.packages.${system}.google-chrome
     eww
     just
     xwayland-satellite
@@ -29,19 +28,12 @@ in
 
     (lib.hiPrio uutils-coreutils-noprefix)
     git # system-wide so root can manage /etc/nixos
-    curl
-    xh
     ripgrep
     fastfetch
     lm_sensors
     gcc
     steam-run
     wine64
-    jaq
-    numbat
-    dust
-    dysk
-    bottom
     caligula
     libreoffice-fresh
     thunderbird

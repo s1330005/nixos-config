@@ -18,14 +18,13 @@ in
     python3
     uv
     inkscape
+    gnome-calculator
 
     (obsidian.override { electron = electron_42; }) # electron 43 renders a black window
     go
-    nodejs
-    deno
+    bun
     github-cli
     fd
-    tree
     simplex-chat-desktop
     inputs.claude-code-nix.packages.${system}.default
   ];

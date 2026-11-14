@@ -15,10 +15,6 @@
     awww.url = "git+https://codeberg.org/LGFae/awww";
     niri.url = "github:sodiboo/niri-flake";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
-    browser-previews = {
-      url = "github:nix-community/browser-previews";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
