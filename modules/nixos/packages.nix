@@ -28,6 +28,7 @@ in
     brightnessctl
 
     (lib.hiPrio uutils-coreutils-noprefix)
+    git # system-wide so root can manage /etc/nixos
     curl
     xh
     ripgrep
