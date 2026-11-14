@@ -27,7 +27,6 @@ in
     fd
     tree
     simplex-chat-desktop
-    inputs.codex-cli-nix.packages.${system}.default
     inputs.claude-code-nix.packages.${system}.default
   ];
 }

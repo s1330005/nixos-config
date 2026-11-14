@@ -14,7 +14,6 @@
     };
     awww.url = "git+https://codeberg.org/LGFae/awww";
     niri.url = "github:sodiboo/niri-flake";
-    codex-cli-nix.url = "github:sadjow/codex-cli-nix";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
     browser-previews = {
       url = "github:nix-community/browser-previews";
