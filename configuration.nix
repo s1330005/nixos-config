@@ -37,6 +37,7 @@
     StatusUnitFormat = "none";
   };
 
+  networking.hostName = "nixos";
   networking.networkmanager.enable = true;
   networking.wg-quick.interfaces = {
     wg0 = {
@@ -88,7 +89,7 @@
     3000
   ];
 
-  # Graphics (GPU-specific driver config lives under hosts/<hostname>/default.nix)
+  # Graphics
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
@@ -96,6 +97,23 @@
       vulkan-loader
       vulkan-validation-layers
     ];
+  };
+
+  # AMD iGPU + Nvidia GTX 1650 (prime offload)
+  hardware.amdgpu.opencl.enable = true;
+  services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
+  hardware.nvidia = {
+    modesetting.enable = true;
+    powerManagement.enable = true;
+    open = false;
+    nvidiaSettings = false;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    prime = {
+      offload.enable = true;
+      offload.enableOffloadCmd = true;
+      amdgpuBusId = "PCI:5:0:0";
+      nvidiaBusId = "PCI:1:0:0";
+    };
   };
 
   time.timeZone = "Asia/Tokyo";
@@ -135,9 +153,10 @@
     GTK_IM_MODULE = lib.mkForce ""; # hide the message displayed at startup
     EDITOR = "hx";
     VISUAL = "hx";
+    VK_ICD_FILENAMES = "/run/opengl-driver/share/vulkan/icd.d/radeon_icd.x86_64.json";
   };
 
-  # Keyboard layout is host-specific; see hosts/<hostname>/default.nix
+  # US keyboard (NixOS default, no xkb/keyMap override needed)
   console = {
     font = "Lat2-Terminus16";
   };
@@ -183,6 +202,9 @@
 
   # Screen locker
   programs.hyprlock.enable = true;
+
+  # Steam
+  programs.steam.enable = true;
 
   # Audio
   security.rtkit.enable = true;
@@ -271,6 +293,8 @@
     bottom
     caligula
     meli
+    libreoffice-fresh
+    thunderbird
 
     keepassxc
     (chromium.override {

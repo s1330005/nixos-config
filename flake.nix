@@ -41,35 +41,26 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-
-      # Shared modules for every machine; host-specific bits (hostname,
-      # keyboard layout, hardware-configuration.nix) live under ./hosts/<name>.
-      mkHost =
-        hostModule:
-        nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit inputs; };
-          modules = [
-            ./configuration.nix
-            hostModule
-            niri.nixosModules.niri
-            home-manager.nixosModules.home-manager
-            {
-              home-manager = {
-                useGlobalPkgs = true;
-                useUserPackages = true;
-                extraSpecialArgs = { inherit inputs; };
-                users.sam = import ./home.nix;
-              };
-            }
-          ];
-        };
     in
     {
-      # NixOS system configurations, one per machine
-      nixosConfigurations = {
-        laptop = mkHost ./hosts/laptop;
-        desktop = mkHost ./hosts/desktop;
+      # Single NixOS system configuration for this machine.
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./configuration.nix
+          ./hardware-configuration.nix
+          niri.nixosModules.niri
+          home-manager.nixosModules.home-manager
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = { inherit inputs; };
+              users.sam = import ./home.nix;
+            };
+          }
+        ];
       };
     }
 

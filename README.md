@@ -100,7 +100,7 @@ mount --mkdir /dev/YYY1 /media/nixos-ssd
 
 nix-shell -p restic --run "restic -r /media/nixos-ssd/restic snapshots"
 nix-shell -p restic --run "restic -r /media/nixos-ssd/restic restore latest --path /etc/nixos --target /mnt"
-# restores to /mnt/etc/nixos. Add --host <hostname> to pick a specific machine's latest snapshot.
+# restores to /mnt/etc/nixos.
 
 umount /media/nixos-ssd
 ```
@@ -109,24 +109,21 @@ restic asks for the repository password (set in section 5). The restored `/mnt/e
 complete copy including `.git`, so the SSD can be unplugged right away.
 `nixos-install` below still needs a network connection to download packages and flake inputs.
 
-This repo defines one `nixosConfigurations` entry per machine under `hosts/<hostname>/`
-(currently `laptop` = US keyboard, `desktop` = JIS keyboard). Each host directory has its
-own `hardware-configuration.nix` and host-specific settings (hostname, keyboard layout), so
-the same repo/branch can be pushed and pulled from both machines without one machine's disk
-UUIDs or keyboard layout clobbering the other's.
+This repo defines a single `nixosConfigurations.nixos` entry. `configuration.nix` holds the
+system config (including the hostname and keyboard layout), `home.nix` the home-manager config,
+and `hardware-configuration.nix` the machine-specific hardware (disk UUIDs, kernel modules,
+GPU drivers).
 
-To add or reinstall a machine, pick the host name that matches its keyboard (or add a new one
-under `hosts/<new-name>/default.nix` following the existing examples), then generate that
-host's hardware config in place of the placeholder:
+To reinstall, generate the hardware config in place of the placeholder:
 
 ```sh
-nixos-generate-config --root /mnt --show-hardware-config > /mnt/etc/nixos/hosts/<hostname>/hardware-configuration.nix
+nixos-generate-config --root /mnt --show-hardware-config > /mnt/etc/nixos/hardware-configuration.nix
 ```
 
 Check that the generated file picked up LUKS and ZFS (no manual edits should be needed):
 
 ```sh
-vim /mnt/etc/nixos/hosts/<hostname>/hardware-configuration.nix
+vim /mnt/etc/nixos/hardware-configuration.nix
 ```
 ```nix
 # expected (UUIDs will differ)
@@ -146,15 +143,15 @@ ZFS also needs a few host-specific settings. Generate a host ID:
 head -c4 /dev/urandom | od -A none -t x4 | tr -d ' '
 ```
 
-and add it to `hosts/<hostname>/default.nix`:
+and add it to `configuration.nix`:
 
 ```sh
-vim /mnt/etc/nixos/hosts/<hostname>/default.nix
+vim /mnt/etc/nixos/configuration.nix
 ```
 ```nix
 boot.supportedFilesystems = [ "zfs" ];
 boot.zfs.forceImportRoot = false;
-networking.hostId = "xxxxxxxx";      # the 8 hex chars generated above, unique per machine
+networking.hostId = "xxxxxxxx";      # the 8 hex chars generated above
 boot.initrd.systemd.enable = true;   # systemd initrd: reuses the passphrase for cryptswap, supports LUKS2 tokens
 services.zfs.autoScrub.enable = true;
 services.zfs.trim.enable = true;
@@ -164,7 +161,7 @@ services.zfs.trim.enable = true;
 > ZFS often lags behind the newest kernel; `linuxPackages_latest` may fail to evaluate with ZFS marked as broken.
 
 ```sh
-nixos-install --flake /mnt/etc/nixos#<hostname>
+nixos-install --flake /mnt/etc/nixos#nixos
 ```
 
 When prompted with `New password:`, set a password for root.
@@ -193,7 +190,7 @@ git config --global user.name "myname"
 git config --global user.email "myname@gmail.com"
 git add .
 git commit -m "first commit"
-nixos-rebuild switch --flake /etc/nixos#<hostname>
+nixos-rebuild switch --flake /etc/nixos#nixos
 ```
 
 Back up the result (it includes this machine's `hardware-configuration.nix`) to the SSD as
@@ -236,8 +233,8 @@ restic -r /media/nixos-ssd/restic forget --keep-last 10 --keep-monthly 12 --prun
 umount /media/nixos-ssd
 ```
 
-Always `umount` before unplugging. Snapshots are tagged with the
-machine's hostname automatically, so both machines can share one repository.
+Always `umount` before unplugging. Snapshots are tagged with the machine's hostname
+automatically.
 
 ### Restore
 
@@ -263,48 +260,9 @@ Restore a whole machine from the live USB: see section 3. To overwrite the runni
 restic -r /media/nixos-ssd/restic restore latest --path /etc/nixos --target /
 ```
 
-### Keeping two machines in sync
-
-Each machine has its own `hosts/<hostname>/` directory, so `configuration.nix`/`home.nix`
-changes never overwrite the other machine's hardware or keyboard settings. Back up on each
-machine after changing the config. To take the other machine's changes, restore its latest
-snapshot to a temporary directory and merge with git:
-
-```sh
-restic -r /media/nixos-ssd/restic restore latest --host <other-hostname> --path /etc/nixos --target /tmp/nixos-restore
-cd /etc/nixos
-git pull /tmp/nixos-restore/etc/nixos main     # or: git fetch + git merge
-nixos-rebuild switch --flake /etc/nixos#<hostname>
-```
-
-Conflicts (if any) will usually only show up in `flake.lock`; resolve by keeping either side
-and re-running `nix flake update` if needed.
-
-The SSD is the only copy outside the two machines; consider keeping a second one
+The SSD is the only copy outside this machine; consider keeping a second one
 (`restic -r <second repo> copy --from-repo /media/nixos-ssd/restic`, or just run `backup`
 against both).
-
-### Moving an already-installed machine onto this host layout
-
-If a machine was already running NixOS before `hosts/<hostname>/` existed, it already has its
-own working `hardware-configuration.nix` (possibly hand-edited, e.g. its filesystem and LUKS
-entries). Preserve that file instead of regenerating it. With the SSD mounted:
-
-```sh
-cd /etc/nixos
-cp hardware-configuration.nix /tmp/hardware-configuration.nix.bak   # back up the real one first
-restic -r /media/nixos-ssd/restic restore latest --path /etc/nixos --target /tmp/nixos-restore
-git fetch /tmp/nixos-restore/etc/nixos main
-git reset --hard FETCH_HEAD           # adopt the new repo layout
-cp /tmp/hardware-configuration.nix.bak hosts/<hostname>/hardware-configuration.nix
-nixos-rebuild switch --flake /etc/nixos#<hostname>
-git add hosts/<hostname>/hardware-configuration.nix
-git commit -m "Add hardware config for <hostname>"
-restic -r /media/nixos-ssd/restic backup /etc/nixos --tag nixos
-```
-
-Only fall back to `nixos-generate-config --show-hardware-config` if that machine never had a
-`hardware-configuration.nix` of its own (e.g. a brand-new install).
 
 ## 6. ZFS basics
 
@@ -363,7 +321,7 @@ enough — no rollback needed.
 
 ### Automatic snapshots
 
-Add to `hosts/<hostname>/default.nix` (or `configuration.nix` for both machines):
+Add to `configuration.nix`:
 
 ```nix
 services.zfs.autoSnapshot = {
