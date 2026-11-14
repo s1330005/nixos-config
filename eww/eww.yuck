@@ -130,6 +130,7 @@
 
 (defwindow bar-window
   :monitor 0
+  :stacking "bottom"
   :windowtype "dock"
   :geometry (geometry :x "0%" :y "0%" :width "100%" :height "30px" :anchor "top center")
   (box :class "bar"))

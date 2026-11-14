@@ -45,7 +45,7 @@
       package = pkgs.yaru-theme;
     };
     iconTheme = {
-      name = "Yaru-blue";
+      name = "Yaru-blue-dark";
       package = pkgs.yaru-theme;
     };
     # Nautilus uses GTK4

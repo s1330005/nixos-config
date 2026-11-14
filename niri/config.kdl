@@ -44,7 +44,7 @@ layout {
     }
     border {
         width 2
-        active-color "#A7C080CC"
+        active-color "#E8E4DCCC"
         inactive-color "#475258CC"
         urgent-color "#9b000096"
     }
@@ -78,13 +78,6 @@ window-rule {
     block-out-from "screen-capture"
 }
 
-// Dim and blur inactive windows
-window-rule {
-    match is-active=false
-    opacity 0.85
-    background-effect { blur true; }
-}
-
 // ── Layer rules ────────────────────────────────────────────
 // Wallpaper shown in overview
 layer-rule {
@@ -94,7 +87,6 @@ layer-rule {
 
 layer-rule {
     match namespace="notifications"
-    opacity 0.9
     geometry-corner-radius 12
     shadow {
         on

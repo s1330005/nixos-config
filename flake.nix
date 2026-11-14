@@ -13,7 +13,6 @@
       inputs.elephant.follows = "elephant";
     };
     awww.url = "git+https://codeberg.org/LGFae/awww";
-    niri.url = "github:sodiboo/niri-flake";
     claude-code-nix.url = "github:sadjow/claude-code-nix";
   };
 
@@ -21,7 +20,6 @@
     inputs@{
       nixpkgs,
       home-manager,
-      niri,
       ...
     }:
     let
@@ -35,7 +33,6 @@
         modules = [
           ./configuration.nix
           ./hardware-configuration.nix
-          niri.nixosModules.niri
           home-manager.nixosModules.home-manager
           {
             home-manager = {
