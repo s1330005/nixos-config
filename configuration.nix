@@ -8,19 +8,16 @@
 
 {
   boot = {
-    kernelPackages = pkgs.linuxPackages;
     loader = {
       systemd-boot.enable = true;
       systemd-boot.configurationLimit = 3; # ブートメニューに出す世代を3つまでに
       systemd-boot.consoleMode = "0"; # 80x25 の最小解像度モードにして文字を大きく表示
       efi.canTouchEfiVariables = true;
-      timeout = 5;
     };
     kernelParams = [ "vt.global_cursor_default=0" ]; # hide the console cursor
     consoleLogLevel = 0; # hide kernel/udev/systemd logs on the console (adds loglevel=0)
   };
 
-  networking.hostName = "nixos";
   networking.networkmanager.enable = true;
   networking.wg-quick.interfaces = {
     wg0 = {
@@ -41,9 +38,6 @@
   };
   networking.firewall.checkReversePath = false; # for VPN
 
-  #hardware.bluetooth.enable = true;
-  #hardware.bluetooth.powerOnBoot = true;
-  #services.blueman.enable = true;
   services.upower.enable = true;
 
   services.snapper = {
@@ -73,24 +67,18 @@
   ];
 
   # Graphics
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-    extraPackages = with pkgs; [
-      vulkan-loader
-      vulkan-validation-layers
-    ];
-  };
+  hardware.graphics.enable = true;
 
   # AMD iGPU + Nvidia GTX 1650 (prime offload)
   hardware.amdgpu.opencl.enable = true;
+  # amdgpu を initrd で読み込み、fbcon の切り替えをコンソールフォント設定より前に済ませる
+  # (後から読み込まれるとフォントがカーネル既定に戻る)
+  hardware.amdgpu.initrd.enable = true;
   services.xserver.videoDrivers = [ "amdgpu" "nvidia" ];
   hardware.nvidia = {
-    modesetting.enable = true;
     powerManagement.enable = true;
     open = false;
     nvidiaSettings = false;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
     prime = {
       offload.enable = true;
       offload.enableOffloadCmd = true;
@@ -115,22 +103,6 @@
       "ja_JP.UTF-8/UTF-8"
       "en_US.UTF-8/UTF-8"
     ];
-    extraLocaleSettings = {
-      LANGUAGE = "en_US.UTF-8";
-      LC_ALL = "en_US.UTF-8";
-      LC_CTYPE = "en_US.UTF8";
-      LC_ADDRESS = "en_US.UTF8";
-      LC_IDENTIFICATION = "en_US.UTF8";
-      LC_MEASUREMENT = "en_US.UTF8";
-      LC_MESSAGES = "en_US.UTF-8";
-      LC_MONETARY = "en_US.UTF8";
-      LC_NAME = "en_US.UTF8";
-      LC_NUMERIC = "en_US.UTF-8";
-      LC_PAPER = "en_US.UTF8";
-      LC_TELEPHONE = "en_US.UTF8";
-      LC_TIME = "en_US.UTF8";
-      LC_COLLATE = "en_US.UTF8";
-    };
   };
   environment.variables = {
     GTK_IM_MODULE = lib.mkForce ""; # hide the message displayed at startup
@@ -194,7 +166,6 @@
   };
   # tuigreet の画面にカーネル/systemd のログが混ざらないようにする
   systemd.services.greetd.serviceConfig = {
-    Type = "idle";
     StandardInput = "tty";
     StandardOutput = "tty";
     StandardError = "journal";
@@ -229,15 +200,11 @@
   # Screen locker
   programs.hyprlock.enable = true;
 
-  # Steam
-  programs.steam.enable = true;
-
   # Audio
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
-    alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = true;
   };
@@ -250,9 +217,6 @@
       "networkmanager"
       "docker"
     ];
-    packages = with pkgs; [
-      tree
-    ];
     shell = pkgs.nushell;
   };
 
@@ -264,7 +228,6 @@
         "1.1.1.1"
         "8.8.8.8"
       ];
-      log-driver = "journald";
       storage-driver = "overlay2";
     };
   };
@@ -284,21 +247,18 @@
   # obsidian を electron_42 で固定しているため (home.nix 参照)
   nixpkgs.config.permittedInsecurePackages = [ "electron-42.11.18" ];
   documentation.nixos.enable = false; # hide NixOS documentation
-  programs.xwayland.enable = true;
   services.gvfs.enable = true; # for nautilus
   environment.systemPackages = with pkgs; [
     inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
     inputs.browser-previews.packages.${pkgs.stdenv.hostPlatform.system}.google-chrome
     eww
     just
-    wayland
     xwayland-satellite
     adwaita-icon-theme
     yaru-theme
     nautilus
     pulseaudio
     brightnessctl
-    wireguard-tools
 
     (lib.hiPrio pkgs.uutils-coreutils-noprefix) # use uutils instead of coreutils
     helix
@@ -325,9 +285,7 @@
     keepassxc
     (chromium.override {
       commandLineArgs = [
-        "--enable-features=AcceleratedVideoEncoder,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE"
-        "--enable-features=VaapiIgnoreDriverChecks,VaapiVideoDecoder,PlatformHEVCDecoderSupport"
-        "--enable-features=UseMultiPlaneFormatForHardwareVideo"
+        "--enable-features=AcceleratedVideoEncoder,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks,Vulkan,DefaultANGLEVulkan,VulkanFromANGLE,VaapiVideoDecoder,PlatformHEVCDecoderSupport,UseMultiPlaneFormatForHardwareVideo"
         "--ignore-gpu-blocklist"
         "--enable-zero-copy"
       ];
@@ -402,8 +360,6 @@
       ipaexfont
     ];
 
-    fontDir.enable = true;
-
     fontconfig = {
       defaultFonts = {
         sansSerif = [
@@ -416,19 +372,6 @@
         ];
         emoji = [ "Noto Color Emoji" ];
       };
-      # google-fonts の Noto Color Emoji は COLRv1 形式で Alacritty が描画できないため除外
-      # (noto-fonts-color-emoji の CBDT 版を使う)
-      # localConf = ''
-      #   <?xml version="1.0"?>
-      #   <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
-      #   <fontconfig>
-      #     <selectfont>
-      #       <rejectfont>
-      #         <glob>*-google-fonts-*/NotoColorEmoji*.ttf</glob>
-      #       </rejectfont>
-      #     </selectfont>
-      #   </fontconfig>
-      # '';
     };
   };
 

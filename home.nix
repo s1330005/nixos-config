@@ -147,6 +147,7 @@ in
     deno
     github-cli
     fd
+    tree
     simplex-chat-desktop
     tdf
     viu
